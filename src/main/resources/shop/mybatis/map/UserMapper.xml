@@ -2,13 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="shop.mybatis.map.UserMapper">
-    <!--<resultMap id="usermap" type="User" autoMapping="true">-->
-        <!--<id column="id" property="id"/>-->
-        <!--<result column="username" property="username"/>-->
-        <!--<result column="password" property="password"/>-->
-        <!--<result column="nickname" property="nickname"/>-->
-    <!--</resultMap>-->
-    <select id="load" parameterType="int" resultType="User">
-        SELECT * FROM t_user WHERE id = #{id}
+    <resultMap id="addressmap" type="Address">
+        <id property="id" column="t_addr_id"/>
+        <result property="recipient" column="recipient"/>
+        <result property="addressInfo" column="address_info"/>
+        <result property="phone" column="phone"/>
+        <result property="zip" column="zip"/>
+    </resultMap>
+    <resultMap id="usermap" type="User">
+        <id column="t_user_id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="nickname" property="nickname"/>
+        <result column="role" property="role"/>
+        <collection property="addresses" ofType="Address" resultMap="addressmap"/>
+    </resultMap>
+    <select id="load" parameterType="int" resultMap="usermap">
+        SELECT *, t1.id as t_user_id, t2.id as t_addr_id
+        FROM t_user t1 LEFT JOIN t_address t2 ON t1.id = t2.user_id
+        WHERE t1.id = #{id}
+        ORDER BY t2.id
     </select>
+
+    <insert id="add" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_user
+        VALUES (NULL, #{username}, #{password}, #{nickname}, #{role})
+    </insert>
 </mapper>

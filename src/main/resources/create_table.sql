@@ -26,5 +26,12 @@ ALTER TABLE t_user CHANGE type role INT(5);
 
 SELECT * FROM t_user;
 DESC t_address;
+INSERT INTO t_user VALUES (NULL, 'harry', '222', '哈利', 3);
+UPDATE t_user SET role = 1 WHERE id = 5;
 
+SELECT * FROM t_address;
+INSERT INTO t_address VALUES (NULL, 'harry', '女贞路999号', '582469', '200001', 4);
+
+SELECT *, t1.id as addr_id FROM t_address t1 LEFT JOIN t_user t2 ON t1.user_id = t2.id WHERE t1.id = 1;
+SELECT *, t1.id as t_user_id, t2.id as t_addr_id FROM t_user t1 LEFT JOIN t_address t2 ON t1.id = t2.user_id GROUP BY t1.id;
 

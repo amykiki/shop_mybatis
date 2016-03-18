@@ -11,7 +11,7 @@
         <typeAlias alias="Address" type="${address}"/>
     </typeAliases>
     <typeHandlers>
-        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="shop.model.Role"/>
+        <typeHandler handler="shop.mybatis.handler.RoleHandler" javaType="shop.model.Role"/>
     </typeHandlers>
     <environments default="development">
         <environment id="development">
@@ -26,6 +26,6 @@
     </environments>
     <mappers>
         <mapper class="shop.mybatis.map.UserMapper"/>
-        <mapper resource="shop/mybatis/map/UserMapper.xml"/>
+        <mapper class="shop.mybatis.map.AddressMapper"/>
     </mappers>
 </configuration>

@@ -8,18 +8,20 @@ import shop.util.BatisUtil;
 /**
  * Created by Amysue on 2016/3/17.
  */
-public class UserDao {
-    public User load(int id) {
-        SqlSession session = null;
-        try {
-            session = BatisUtil.getSession();
-            UserMapper mapper = session.getMapper(UserMapper.class);
-            User u = mapper.load(id);
-            System.out.println(u);
-        } finally {
-            BatisUtil.closeSession(session);
-        }
-        return null;
+public class UserDao extends BaseDao<User>{
+    public UserDao() {
+        super(UserMapper.class);
     }
 
+    @Override
+    public User load(int id) {
+        return super.load(id);
+    }
+
+    @Override
+    public int add(User obj) {
+        //// TODO: find unique username 2016/3/18
+        int id = super.add(obj);
+        return id;
+    }
 }

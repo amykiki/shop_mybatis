@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="shop.mybatis.map.AddressMapper">
+
+    <resultMap id="loadaddress" type="Address" autoMapping="true">
+        <id column="t_addr_id" property="id"/>
+        <result column="address_info" property="addressInfo"/>
+        <association property="user" javaType="User" autoMapping="true">
+            <id column="t_user_id" property="id"/>
+        </association>
+    </resultMap>
+    <select id="load" parameterType="int" resultMap="loadaddress">
+        SELECT *, t1.id as t_addr_id, t2.id as t_user_id
+        FROM t_address t1 LEFT JOIN t_user t2 on t1.user_id = t2.id
+        WHERE t1.id = #{id}
+    </select>
+    <insert id="add" parameterType="Address" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_address (recipient, address_info, phone, zip, user_id)
+        VALUE(#{recipient}, #{addressInfo}, #{phone}, #{zip}, #{user.id})
+    </insert>
+
+</mapper>
