@@ -28,4 +28,37 @@
         INSERT INTO t_user
         VALUES (NULL, #{username}, #{password}, #{nickname}, #{role})
     </insert>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM t_user WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="User">
+        UPDATE t_user
+        <set>
+            <if test="password != null">password=#{password},</if>
+            <if test="nickname != null">nickname=#{nickname},</if>
+            <if test="role != null">role=#{role}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="loadLists" resultType="User">
+        SELECT * FROM t_user;
+    </select>
+
+    <select id="find" parameterType="map" resultType="User">
+        SELECT * FROM t_user
+        <where>
+            <if test="username != null and _parameter.get(username) != '' ">
+                username LIKE concat('%', #{username}, '%')
+            </if>
+            <if test="nickname != null and _parameter.get(nickname) != '' ">
+                AND nickname LIKE concat('%', #{nickname}, '%')
+            </if>
+            <if test="role != null">
+                AND role = #{role}
+            </if>
+        </where>
+    </select>
 </mapper>

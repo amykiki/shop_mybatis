@@ -5,6 +5,8 @@ import shop.dao.AddressDao;
 import shop.model.Address;
 import shop.model.User;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -38,5 +40,32 @@ public class AddressDaoTest {
 
         int id = adao.add(address);
         System.out.println("Generated ID = " + id);
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        int affectedRows = adao.delete(7);
+        System.out.println("affectedRows = " + affectedRows);
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        Address address = new Address();
+        address.setId(4);
+        address.setRecipient("白雪公主");
+        address.setAddressInfo("上海市北江燕路338弄588号");
+        address.setPhone("013585603589");
+        address.setZip("4526");
+        int affectedRows = adao.update(address);
+        System.out.println("affectedRows = " + affectedRows);
+
+    }
+
+    @Test
+    public void testLoadLists() throws Exception {
+        List<Address> aLists = adao.loadLists();
+        for (Address a : aLists) {
+            System.out.println(a + " User: " + a.getUser());
+        }
     }
 }

@@ -20,4 +20,24 @@
         VALUE(#{recipient}, #{addressInfo}, #{phone}, #{zip}, #{user.id})
     </insert>
 
+    <delete id="delete" parameterType="int">
+        DELETE FROM t_address WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="Address">
+        UPDATE t_address
+        <set>
+            <if test="recipient != null">recipient=#{recipient},</if>
+            <if test="addressInfo != null">address_info=#{addressInfo},</if>
+            <if test="phone != null">phone=#{phone},</if>
+            <if test="zip != null">zip=#{zip}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="loadLists" resultMap="loadaddress">
+        SELECT *, t1.id as t_addr_id, t2.id as t_user_id
+        FROM t_address t1 LEFT JOIN t_user t2 on t1.user_id = t2.id
+    </select>
+
 </mapper>

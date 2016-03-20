@@ -1,6 +1,8 @@
 package shop.util;
 
+import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -17,6 +19,10 @@ public class BatisUtil {
     private static String batisConfig = "mybatis-config.xml";
 
     public static SqlSession getSession() {
+        return getSession(ExecutorType.SIMPLE);
+    }
+
+    public static SqlSession getSession(ExecutorType type) {
         if (sessionFactory == null) {
             synchronized (BatisUtil.class) {
                 if (sessionFactory == null) {
@@ -29,7 +35,7 @@ public class BatisUtil {
                 }
             }
         }
-        return sessionFactory.openSession();
+        return sessionFactory.openSession(type);
     }
 
     public static void closeSession(SqlSession session) {
