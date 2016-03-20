@@ -24,6 +24,13 @@
         ORDER BY t2.id
     </select>
 
+    <select id="loadByName" parameterType="string" resultMap="usermap">
+        SELECT *, t1.id as t_user_id, t2.id as t_addr_id
+        FROM t_user t1 LEFT JOIN t_address t2 ON t1.id = t2.user_id
+        WHERE t1.username = #{username}
+        ORDER BY t2.id
+    </select>
+
     <insert id="add" parameterType="User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO t_user
         VALUES (NULL, #{username}, #{password}, #{nickname}, #{role})

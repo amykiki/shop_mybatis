@@ -11,6 +11,7 @@ import java.util.Map;
  */
 public interface UserMapper {
     public User load (int id);
+    public User loadByName (String name);
 
     public int add(User user);
     public int delete(int id);

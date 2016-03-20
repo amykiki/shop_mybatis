@@ -17,6 +17,8 @@ public class BaseDao<T> {
     private Class clz;
 
     public BaseDao(Class clz) {
+        System.out.println("=========Add " + this.getClass().getName() + " Begin===========");
+        DaoFactory.setDao(this);
         this.clz = clz;
     }
 
@@ -28,6 +30,22 @@ public class BaseDao<T> {
             Object mapper = session.getMapper(clz);
             Method load   = mapper.getClass().getDeclaredMethod("load", int.class);
             obj = (T) load.invoke(mapper, id);
+        } catch (Exception e) {
+            throw new RuntimeException("Load " + clz.getSimpleName() + " Failed", e);
+        } finally {
+            BatisUtil.closeSession(session);
+        }
+        return obj;
+    }
+
+    public T loadByName(String name) {
+        T          obj     = null;
+        SqlSession session = null;
+        try {
+            session = BatisUtil.getSession();
+            Object mapper = session.getMapper(clz);
+            Method loadByName   = mapper.getClass().getDeclaredMethod("loadByName", String.class);
+            obj = (T) loadByName.invoke(mapper, name);
         } catch (Exception e) {
             throw new RuntimeException("Load " + clz.getSimpleName() + " Failed", e);
         } finally {

@@ -1,19 +1,30 @@
 package test;
 
 import org.junit.Test;
-import shop.dao.AddressDao;
+import shop.dao.DaoFactory;
+import shop.dao.IAddressDao;
 import shop.model.Address;
-import shop.model.User;
+import shop.util.ShopDi;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Amysue on 2016/3/18.
  */
 public class AddressDaoTest {
-    AddressDao adao = new AddressDao();
+    IAddressDao adao;
+
+    public AddressDaoTest() {
+        System.out.println("=========Address Dao Test Begin===========");
+        DaoFactory.setDao(this);
+    }
+
+    @ShopDi("addressDao")
+    public void setAdao(IAddressDao adao) {
+        this.adao = adao;
+        System.out.println("=========Address Dao Test END===========");
+    }
+
 
     @Test
     public void testLoad() throws Exception {
@@ -25,20 +36,17 @@ public class AddressDaoTest {
     @Test
     public void testAdd() throws Exception {
         Address address = new Address();
-        User u = new User();
-        u.setId(2);
         address.setRecipient("管理员");
         address.setAddressInfo("上海市北江燕路338弄17号");
         address.setPhone("13585603589");
         address.setZip("dd4526");
-        address.setUser(u);
 
-        address.setRecipient("莉莉");
-        address.setAddressInfo("北京市北江燕路338弄17号");
-        address.setPhone("18930161861");
+        address.setRecipient("小小周");
+        address.setAddressInfo("上海市杨浦区邯郸路220号");
+        address.setPhone("021-556678778");
         address.setZip("4526");
 
-        int id = adao.add(address);
+        int id = adao.add(address, 19);
         System.out.println("Generated ID = " + id);
     }
 
