@@ -47,8 +47,7 @@
         SELECT * FROM t_user;
     </select>
 
-    <select id="find" parameterType="map" resultType="User">
-        SELECT * FROM t_user
+    <sql id="findWhere">
         <where>
             <if test="username != null and _parameter.get(username) != '' ">
                 username LIKE concat('%', #{username}, '%')
@@ -60,5 +59,16 @@
                 AND role = #{role}
             </if>
         </where>
+    </sql>
+
+    <select id="find" parameterType="map" resultType="User">
+        SELECT * FROM t_user
+        <include refid="findWhere"/>
+        LIMIT #{offset}, #{pageLimit}
+    </select>
+
+    <select id="findCount" parameterType="map" resultType="int">
+        SELECT count(*) FROM t_user
+        <include refid="findWhere"/>
     </select>
 </mapper>

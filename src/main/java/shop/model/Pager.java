@@ -6,10 +6,10 @@ import java.util.List;
  * Created by Amysue on 2016/3/18.
  */
 public class Pager<T> {
-    private int currentPage;
-    private int pageItems;
-    private int allPageNums;
-    private int allItems;
+    private int     currentPage;
+    private int     pageLimit;
+    private int     allPageNums;
+    private int     allItems;
     private List<T> tLists;
 
     public int getCurrentPage() {
@@ -20,12 +20,12 @@ public class Pager<T> {
         this.currentPage = currentPage;
     }
 
-    public int getPageItems() {
-        return pageItems;
+    public int getPageLimit() {
+        return pageLimit;
     }
 
-    public void setPageItems(int pageItems) {
-        this.pageItems = pageItems;
+    public void setPageLimit(int pageLimit) {
+        this.pageLimit = pageLimit;
     }
 
     public int getAllPageNums() {

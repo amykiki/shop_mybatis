@@ -116,16 +116,39 @@ public class BaseDao<T> {
 
     public Pager<T> find(Map<String, Object> params) {
         SqlSession session;
-        List<T>    lists;
-        Pager<T>   pager   = new Pager<>();
+        List<T>    lists       = null;
+        Pager<T>   pager       = new Pager<>();
+        int        allItems    = 0;
+        int        pageLimit   = (int) params.get("pageLimit");
+        int        currentPage = (int) params.get("currentPage");
+        int        allPageNums = 0;
         try {
             session = BatisUtil.getSession();
-            Object mapper = session.getMapper(clz);
-            Method find   = mapper.getClass().getDeclaredMethod("find", Map.class);
-            lists = (List<T>) find.invoke(mapper, params);
+            Object mapper    = session.getMapper(clz);
+            Method findCount = mapper.getClass().getDeclaredMethod("findCount", Map.class);
+            allItems = (int) findCount.invoke(mapper, params);
+            if (allItems == 0) {
+                allPageNums = 0;
+                currentPage = 0;
+            } else {
+                allPageNums = (allItems - 1) / pageLimit + 1;
+                if (currentPage > allPageNums) {
+                    currentPage = allPageNums;
+                } else if (currentPage <= 0){
+                    currentPage = 1;
+                }
+                int offset = (currentPage - 1) * pageLimit;
+                params.put("offset", offset);
+                Method find = mapper.getClass().getDeclaredMethod("find", Map.class);
+                lists = (List<T>) find.invoke(mapper, params);
+            }
         } catch (Exception e) {
             throw new RuntimeException("Find " + clz.getSimpleName() + " Failed", e);
         }
+        pager.setPageLimit(pageLimit);
+        pager.setAllItems(allItems);
+        pager.setAllPageNums(allPageNums);
+        pager.setCurrentPage(currentPage);
         pager.settLists(lists);
         return pager;
     }

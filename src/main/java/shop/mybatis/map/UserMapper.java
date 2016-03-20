@@ -1,5 +1,6 @@
 package shop.mybatis.map;
 
+import org.apache.ibatis.session.RowBounds;
 import shop.model.User;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface UserMapper {
     public List<User> loadLists();
 
     public List<User> find(Map<String, Object> map);
+
+    public int findCount(Map<String, Object> map);
 }

@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by Amysue on 2016/3/17.
  */
@@ -69,9 +67,12 @@ public class UserDaoTest {
     @Test
     public void testFind() throws Exception {
         Map<String, Object> map = new HashMap<>();
+        map.put("pageLimit", 15);
+        map.put("currentPage", 33);
 //        map.put("username", "harry");
-        map.put("role", Role.ADMIN);
-        map.put("nickname", "哈利");
+//        map.put("username", "amysue");
+//        map.put("role", Role.ADMIN);
+//        map.put("nickname", "哈利");
         Pager<User> uPager = udao.find(map);
         List<User> uList = uPager.gettLists();
         if (uList != null) {
@@ -79,5 +80,9 @@ public class UserDaoTest {
                 System.out.println(u);
             }
         }
+        System.out.println("All Items: " + uPager.getAllItems());
+        System.out.println("All Page Nums: " + uPager.getAllPageNums());
+        System.out.println("Page Items: " + uPager.getPageLimit());
+        System.out.println("Current Page: " + uPager.getCurrentPage());
     }
 }
