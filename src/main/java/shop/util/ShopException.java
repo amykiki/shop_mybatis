@@ -3,7 +3,7 @@ package shop.util;
 /**
  * Created by Amysue on 2016/3/18.
  */
-public class ShopException extends RuntimeException {
+public class ShopException extends Exception {
     public ShopException() {
         super();
     }

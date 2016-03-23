@@ -1,6 +1,5 @@
 package shop.mybatis.map;
 
-import org.apache.ibatis.session.RowBounds;
 import shop.model.User;
 
 import java.util.List;

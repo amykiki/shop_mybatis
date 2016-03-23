@@ -6,7 +6,7 @@
         </Console>
     </appenders>
     <loggers>
-        <logger name="shop.map" level="trace" additivity="false">
+        <logger name="shop.mybatis.map" level="debug" additivity="false">
             <appender-ref ref="Console"/>
         </logger>
         <root level="trace">

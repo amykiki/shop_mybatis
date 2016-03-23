@@ -1,5 +1,7 @@
 package shop.model;
 
+import shop.web.annotation.NotNULL;
+
 import java.util.List;
 
 /**
@@ -7,8 +9,11 @@ import java.util.List;
  */
 public class User {
     private int id;
+    @NotNULL(value = true, errMsg = "用户名不能为空")
     private String username;
+    @NotNULL(value = true, errMsg = "密码不能为空")
     private String password;
+    @NotNULL(value = true, errMsg = "昵称不能为空")
     private String nickname;
     private Role role;
     private List<Address> addresses;

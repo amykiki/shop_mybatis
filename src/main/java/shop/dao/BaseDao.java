@@ -3,6 +3,7 @@ package shop.dao;
 import org.apache.ibatis.session.SqlSession;
 import shop.model.Pager;
 import shop.util.BatisUtil;
+import shop.util.ShopException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -54,7 +55,7 @@ public class BaseDao<T> {
         return obj;
     }
 
-    public int add(T obj) {
+    public int add(T obj) throws ShopException{
         SqlSession session = null;
         int        keyID   = -1;
         try {

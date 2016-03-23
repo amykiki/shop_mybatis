@@ -17,7 +17,7 @@ public class UserDao extends BaseDao<User> implements IUserDao{
     }
 
     @Override
-    public int add(User obj) {
+    public int add(User obj) throws ShopException{
         User u = loadByName(obj.getUsername());
         if (u != null) {
             throw new ShopException("User " + obj.getUsername() + " has existed");
@@ -25,6 +25,7 @@ public class UserDao extends BaseDao<User> implements IUserDao{
         int id = super.add(obj);
         return id;
     }
+
 
     @Override
     public List<User> loadLists() {
@@ -34,5 +35,17 @@ public class UserDao extends BaseDao<User> implements IUserDao{
     @Override
     public User loadByName(String name) {
         return super.loadByName(name);
+    }
+
+    @Override
+    public User login(String username, String password) throws ShopException{
+        User u = loadByName(username);
+        if (u == null) {
+            throw new ShopException("没有" + username + "的用户");
+        }
+        if (!u.getPassword().equals(password)) {
+            throw new ShopException("密码不正确");
+        }
+        return u;
     }
 }

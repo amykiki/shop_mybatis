@@ -1,0 +1,112 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #666666;
+    background: #ffffff;
+    text-align: center;
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+#formwrapper {
+    width: 450px;
+    margin: 15px auto;
+    padding: 20px;
+    text-align: left;
+    border: 1px #A4CDF2;
+}
+fieldset {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #A4CDF2;
+    background: #ffffff;
+}
+
+fieldset legend{
+    color: #1E7ACE;
+    font-weight: bold;
+    padding: 3px 8px;
+    border: 1px solid #A4CDF2;
+    background: #ffffff;
+}
+fieldset label{
+    float: left;
+    width: 160px;
+    text-align: right;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+fieldset input[type=text] {
+    vertical-align: middle;
+}
+fieldset div {
+    clear: left;
+    margin: 4px 0;
+    vertical-align: middle;
+}
+#button {
+    width: 180px;
+    margin: 0 auto;
+    margin-top: 8px;
+}
+#button input{
+    background: #ffffff;
+    border: 1px solid #A4CDF2;
+    color: #1E7ACE;
+    width: 60px;
+    margin: auto 6px;
+}
+#but1{
+    float: left;
+}
+#but2 {
+    float: right;
+}
+#clear-float{
+    clear: both;
+}
+fieldset label.error{
+    color: red;
+    font-weight: bold;
+    float: none;
+    /*text-align: center;*/
+}
+
+#nav {
+    width: 100%;
+}
+#headright {
+    text-align: right;
+}
+ul {
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+    text-align: center;
+}
+li {
+    display: inline;
+    margin: 0 4px;
+}
+a:link, a:visited {
+    text-align: center;
+    text-decoration: none;
+}
+
+li a:link, li a:visited {
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #98bf21;
+    text-align: center;
+    text-decoration: none;
+}
+
+li a:hover, li a:active{
+    background-color: #7a991a;
+}
+hr {
+    margin-top: 4px;
+    clear: both;
+}

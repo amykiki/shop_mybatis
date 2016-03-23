@@ -19,13 +19,14 @@ public class DaoFactory {
         Method[] methods = obj.getClass().getDeclaredMethods();
         for (Method m : methods) {
             if (m.isAnnotationPresent(ShopDi.class)) {
-                ShopDi di  = m.getAnnotation(ShopDi.class);
+                ShopDi di      = m.getAnnotation(ShopDi.class);
                 String daoName = di.value();
                 if (daoName == null || daoName.equals("")) {
                     String mName = m.getName();
                     daoName = lowerFirst(mName.substring(3));
                 }
                 Object dao = getDao(daoName);
+                m.setAccessible(true);
                 try {
                     m.invoke(obj, dao);
                 } catch (IllegalAccessException e) {
@@ -42,16 +43,18 @@ public class DaoFactory {
 
     private static String lowerFirst(String string) {
         char[] strs = string.toCharArray();
-        strs[0] += 32;
+        if (strs[0] >= 97 && strs[0] <= 122) {
+            strs[0] += 32;
+        }
         return new String(strs);
     }
 
     public static Object getDao(String name) {
-        Properties prop = PropertiesUtil.getDaoProp();
-        String daoName = prop.getProperty(name);
-        Object dao = null;
+        Properties prop    = PropertiesUtil.getDaoProp();
+        String     daoName = prop.getProperty(name);
+        Object     dao     = null;
         try {
-            Class  clz = Class.forName(daoName);
+            Class clz = Class.forName(daoName);
             dao = clz.newInstance();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

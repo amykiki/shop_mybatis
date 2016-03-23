@@ -1,12 +1,18 @@
 package shop.model;
 
+import shop.web.annotation.NUMBERS;
+import shop.web.annotation.NotNULL;
+
 /**
  * Created by Amysue on 2016/3/16.
  */
 public class Address {
     private int id;
+    @NotNULL(value = true, errMsg = "收件人不能为空")
     private String recipient;
+    @NotNULL(value = true, errMsg = "收货地址不能为空")
     private String addressInfo;
+    @NUMBERS(value = 6, errMsg = "电话长度不能小于6位")
     private String phone;
     private String zip;
     private User user;

@@ -1,10 +1,8 @@
 package test;
 
-import org.junit.Before;
 import org.junit.Test;
 import shop.dao.DaoFactory;
 import shop.dao.IUserDao;
-import shop.dao.UserDao;
 import shop.model.Address;
 import shop.model.Pager;
 import shop.model.Role;

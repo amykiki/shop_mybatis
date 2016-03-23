@@ -30,7 +30,7 @@ public class AddressDao extends BaseDao<Address> implements IAddressDao{
     }
 
     @Override
-    public int add(Address obj, int userId) {
+    public int add(Address obj, int userId) throws ShopException{
         User u = userDao.load(userId);
         if (u == null) {
             throw new ShopException("Not User has the Address " + obj.getAddressInfo() + ",cann't be added");
