@@ -10,6 +10,8 @@ public class Pager<T> {
     private int     pageLimit;
     private int     allPageNums;
     private int     allItems;
+    private int     begin;
+    private int     end;
     private List<T> tLists;
 
     public int getCurrentPage() {
@@ -50,5 +52,21 @@ public class Pager<T> {
 
     public void settLists(List<T> tLists) {
         this.tLists = tLists;
+    }
+
+    public int getBegin() {
+        return begin;
+    }
+
+    public void setBegin(int begin) {
+        this.begin = begin;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+
+    public void setEnd(int end) {
+        this.end = end;
     }
 }

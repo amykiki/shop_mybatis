@@ -18,8 +18,8 @@ public class BaseDao<T> {
     private Class clz;
 
     public BaseDao(Class clz) {
-        System.out.println("=========Add " + this.getClass().getName() + " Begin===========");
-        DaoFactory.setDao(this);
+//        System.out.println("=========Add " + this.getClass().getName() + " Begin===========");
+//        DaoFactory.setDao(this);
         this.clz = clz;
     }
 
@@ -44,8 +44,8 @@ public class BaseDao<T> {
         SqlSession session = null;
         try {
             session = BatisUtil.getSession();
-            Object mapper = session.getMapper(clz);
-            Method loadByName   = mapper.getClass().getDeclaredMethod("loadByName", String.class);
+            Object mapper     = session.getMapper(clz);
+            Method loadByName = mapper.getClass().getDeclaredMethod("loadByName", String.class);
             obj = (T) loadByName.invoke(mapper, name);
         } catch (Exception e) {
             throw new RuntimeException("Load " + clz.getSimpleName() + " Failed", e);
@@ -55,7 +55,7 @@ public class BaseDao<T> {
         return obj;
     }
 
-    public int add(T obj) throws ShopException{
+    public int add(T obj) throws ShopException {
         SqlSession session = null;
         int        keyID   = -1;
         try {
@@ -134,13 +134,16 @@ public class BaseDao<T> {
     }
 
     public Pager<T> find(Map<String, Object> params) {
-        SqlSession session;
+        SqlSession session = null;
         List<T>    lists       = null;
         Pager<T>   pager       = new Pager<>();
         int        allItems    = 0;
         int        pageLimit   = (int) params.get("pageLimit");
-        int        currentPage = (int) params.get("currentPage");
+        int        toPage      = (int) params.get("toPage");
+        int        pageShow    = (int) params.get("pageShow");
         int        allPageNums = 0;
+        int        begin       = 0;
+        int        end         = 0;
         try {
             session = BatisUtil.getSession();
             Object mapper    = session.getMapper(clz);
@@ -148,27 +151,45 @@ public class BaseDao<T> {
             allItems = (int) findCount.invoke(mapper, params);
             if (allItems == 0) {
                 allPageNums = 0;
-                currentPage = 0;
+                toPage = 0;
             } else {
                 allPageNums = (allItems - 1) / pageLimit + 1;
-                if (currentPage > allPageNums) {
-                    currentPage = allPageNums;
-                } else if (currentPage <= 0){
-                    currentPage = 1;
+                if (toPage > allPageNums) {
+                    toPage = allPageNums;
+                } else if (toPage <= 0) {
+                    toPage = 1;
                 }
-                int offset = (currentPage - 1) * pageLimit;
+                //get begin and end index
+                begin = toPage - pageShow / 2;
+                if (begin < 1) {
+                    begin = 1;
+                }
+                end = begin - 1 + pageShow;
+                if (end > allPageNums) {
+                    begin -= end - allPageNums;
+                    if (begin < 1) {
+                        begin = 1;
+                    }
+                    end = allPageNums;
+                }
+                int offset = (toPage - 1) * pageLimit;
                 params.put("offset", offset);
                 Method find = mapper.getClass().getDeclaredMethod("find", Map.class);
                 lists = (List<T>) find.invoke(mapper, params);
             }
         } catch (Exception e) {
             throw new RuntimeException("Find " + clz.getSimpleName() + " Failed", e);
+        } finally {
+            BatisUtil.closeSession(session);
+
         }
         pager.setPageLimit(pageLimit);
         pager.setAllItems(allItems);
         pager.setAllPageNums(allPageNums);
-        pager.setCurrentPage(currentPage);
+        pager.setCurrentPage(toPage);
         pager.settLists(lists);
+        pager.setBegin(begin);
+        pager.setEnd(end);
         return pager;
     }
 }

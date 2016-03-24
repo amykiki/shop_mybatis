@@ -110,3 +110,18 @@ hr {
     margin-top: 4px;
     clear: both;
 }
+
+/*table show list css begin*/
+table.list {
+    margin: auto;
+    margin-top: 5px;
+    border: 1px solid grey;
+    border-collapse: collapse;
+}
+table.list td, table.list th {
+    font-size: 14px;
+    border-bottom: 1px solid gray;
+    border-right: 1px solid gray;
+    padding: 3px;
+}
+/*table show list css end*/

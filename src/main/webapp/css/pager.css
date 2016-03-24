@@ -1,0 +1,42 @@
+ul.tsc_pagination {
+    font: 14px "Tahoma";
+    height: 100%;
+    list-style-type: noe;
+    margin: 4px 0;
+    overflow: hidden;
+    padding: 0;
+    text-align: center;
+    clear: both;
+}
+
+ul.tsc_pagination li {
+    /*float: left;*/
+    display: inline-block;
+    margin: 0 0 0 5px;
+    padding: 0;
+}
+
+ul.tsc_pagination li:first-child {
+    margin-left: 0;
+}
+
+ul.tsc_pagination li a {
+    color: black;
+    display: block;
+    padding: 7px 10px;
+    text-decoration: none;
+}
+
+ul.tsc_paginationA li a {
+    border-radius: 3px;
+    color: #ffffff;
+}
+
+ul.tsc_paginationA05 li a {
+    background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top, #87ab19, #699613) repeat scroll 0 0;
+}
+
+ul.tsc_paginationA05 li a:hover, ul.tsc_paginationA05 li a.current {
+    background: #e7f2c7 none repeat scroll 0 0;
+    color: #4f7119;
+}

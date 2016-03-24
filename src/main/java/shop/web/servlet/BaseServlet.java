@@ -37,7 +37,7 @@ public class BaseServlet extends HttpServlet {
                     return;
                 }
                 if (rc == 2) {
-                    resp.sendRedirect("/WEB-INF/user/login.jsp");
+                    resp.sendRedirect("/user.do?method=loginInput");
                     return;
                 }
             }

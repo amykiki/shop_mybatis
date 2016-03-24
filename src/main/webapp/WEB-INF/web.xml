@@ -45,6 +45,14 @@
     <servlet>
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>shop.web.servlet.UserServlet</servlet-class>
+        <init-param>
+            <param-name>pageLimit</param-name>
+            <param-value>15</param-value>
+        </init-param>
+        <init-param>
+            <param-name>pageShow</param-name>
+            <param-value>10</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>

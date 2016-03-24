@@ -16,6 +16,7 @@ public class AddressDao extends BaseDao<Address> implements IAddressDao{
 
     public AddressDao() {
         super(AddressMapper.class);
+        DaoFactory.setDao(this);
     }
 
     @ShopDi
