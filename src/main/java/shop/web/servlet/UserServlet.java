@@ -102,6 +102,7 @@ public class UserServlet extends BaseServlet {
         if (req.getParameter("nickname") != null) {
             params.put("nickname", req.getParameter("nickname"));
         }
+        req.setAttribute("cuser", params);
         Pager<User> pLists = udao.find(params);
         req.setAttribute("pLists", pLists);
         return "/WEB-INF/user/list.jsp";

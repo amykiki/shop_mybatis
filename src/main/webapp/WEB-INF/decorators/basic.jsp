@@ -12,8 +12,8 @@
 <html>
 <head>
     <title><decorator:title/></title>
-    <decorator:head/>
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/main.css">
+    <decorator:head/>
 </head>
 <body>
 <h3>Amy's 商城系统</h3>

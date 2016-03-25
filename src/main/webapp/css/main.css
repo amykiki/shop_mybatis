@@ -63,8 +63,23 @@ fieldset div {
 #but2 {
     float: right;
 }
-#clear-float{
+.clear-float{
     clear: both;
+}
+#formwrapper .radio-div {
+    display: inline;
+}
+#formwrapper .last-radio-div {
+    display: inline-block;
+    vertical-align: text-bottom;
+}
+#formwrapper .last-radio-div input {
+    vertical-align: text-bottom;
+    margin-right: 5px;
+}
+#formwrapper .radio-div label {
+    float: none;
+    margin-right: 1px;
 }
 fieldset label.error{
     color: red;
@@ -125,3 +140,7 @@ table.list td, table.list th {
     padding: 3px;
 }
 /*table show list css end*/
+
+/*search div begin*/
+
+/*search div end*/

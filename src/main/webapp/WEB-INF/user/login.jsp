@@ -30,7 +30,7 @@
             </div>
             <div id="button">
                 <input id="but1" type="submit" value="提交"/><input id = "but2" type="reset" value="重置"/>
-                <div id="clear-float"></div>
+                <div class="clear-float"></div>
             </div>
         </fieldset>
     </form>
