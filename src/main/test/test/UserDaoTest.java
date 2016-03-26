@@ -9,9 +9,7 @@ import shop.model.Role;
 import shop.model.User;
 import shop.util.ShopDi;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Amysue on 2016/3/17.
@@ -105,6 +103,41 @@ public class UserDaoTest {
             for (Address addr : u.getAddresses()) {
                 System.out.println(addr);
             }
+        }
+    }
+
+    @Test
+    public void testDeleteLists() throws Exception {
+        Integer[] data = new Integer[]{24, 29, 33};
+        List<Integer> list = Arrays.<Integer>asList(data);
+//        List<Integer> list = new ArrayList<>();
+        int rows = udao.deleteLists(list);
+        System.out.println("rows = " + rows);
+    }
+
+    @Test
+    public void testLogin() throws Exception {
+
+    }
+
+    @Test
+    public void testUpdateAuth() throws Exception {
+        Integer[] data = new Integer[]{18, 20, 22};
+        List<Integer> list = Arrays.<Integer>asList(data);
+        int rows = udao.updateAuth(Role.ADMIN, list);
+        System.out.println("rows = " + rows);
+    }
+
+    @Test
+    public void testFinally() throws Exception{
+        try {
+            System.out.println("This is Try block");
+            int i = 10 / 0;
+        } catch (Exception e) {
+            System.out.println("This is Catch block");
+            throw new Exception(e);
+        } finally {
+            System.out.println("This is Finally Block");
         }
     }
 }

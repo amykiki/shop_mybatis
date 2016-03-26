@@ -1,6 +1,8 @@
 package shop.web.servlet;
 
 import shop.dao.IUserDao;
+import shop.dao.UserDao;
+import shop.model.EqualID;
 import shop.model.Pager;
 import shop.model.Role;
 import shop.model.User;
@@ -12,16 +14,15 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Amysue on 2016/3/23.
  */
 public class UserServlet extends BaseServlet {
     private IUserDao udao;
-    private int pageLimit;
-    private int pageShow;
+    private int      pageLimit;
+    private int      pageShow;
 
     @ShopDi("userDao")
     public void setUdao(IUserDao udao) {
@@ -106,6 +107,62 @@ public class UserServlet extends BaseServlet {
         Pager<User> pLists = udao.find(params);
         req.setAttribute("pLists", pLists);
         return "/WEB-INF/user/list.jsp";
-
     }
+
+    @Auth(value = Role.ADMIN)
+    public String delete(HttpServletRequest req, HttpServletResponse resp) {
+        List<Integer> list = getSelected(req);
+        try {
+            udao.deleteLists(list);
+        } catch (ShopException e) {
+            req.setAttribute("errMsg", "删除失败,需要先删除用户的所有地址");
+        }
+        return "/user.do?method=list";
+    }
+
+    @Auth(value = Role.ADMIN)
+    public String update(HttpServletRequest req, HttpServletResponse resp) {
+
+        return null;
+    }
+
+    @Auth(value = Role.NORMAL, equalID = EqualID.EQUAL)
+    public String updateSelf(HttpServletRequest req, HttpServletResponse resp) {
+        return null;
+    }
+
+    @Auth(value = Role.ADMIN)
+    public String changeAuth(HttpServletRequest req, HttpServletResponse resp) {
+        List<Integer> list = getSelected(req);
+        String rolestr = req.getParameter("roles");
+
+        try {
+            Role role = Role.valueOf(rolestr);
+            udao.updateAuth(role, list);
+        } catch (Exception e) {
+            req.setAttribute("errMsg", "修改用户权限失败");
+        }
+        return "/user.do?method=list";
+    }
+
+    private List<Integer> getSelected(HttpServletRequest req) {
+        String[]      idstrs = req.getParameterValues("userids");
+        List<Integer> list   = new ArrayList<>();
+        User          u      = (User) req.getSession().getAttribute("lguser");
+        if (idstrs != null) {
+            for (String idstr : idstrs) {
+                try {
+                    int id = Integer.parseInt(idstr);
+                    if (id != u.getId()) {
+                        list.add(id);
+                    }
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+            }
+        }
+        return list;
+    }
+
+
 }

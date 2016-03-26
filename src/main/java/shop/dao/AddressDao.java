@@ -41,7 +41,7 @@ public class AddressDao extends BaseDao<Address> implements IAddressDao{
     }
 
     @Override
-    public int delete(int id) {
+    public int delete(int id) throws ShopException{
         return super.delete(id);
     }
 

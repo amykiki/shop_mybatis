@@ -1,6 +1,7 @@
 package shop.dao;
 
 import shop.model.Pager;
+import shop.model.Role;
 import shop.model.User;
 import shop.util.ShopException;
 
@@ -15,7 +16,7 @@ public interface IUserDao {
 
     public User load(int id);
 
-    public int delete(int id);
+    public int delete(int id) throws ShopException;
 
     public int update(User u);
 
@@ -26,5 +27,7 @@ public interface IUserDao {
     public Pager<User> find(Map<String, Object> params);
 
     public User login(String username, String password) throws ShopException;
+    public int deleteLists(List<Integer> list) throws ShopException;
+    public int updateAuth(Role role, List<Integer> list);
 
 }

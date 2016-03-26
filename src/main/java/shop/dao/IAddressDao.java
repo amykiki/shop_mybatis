@@ -13,7 +13,7 @@ public interface IAddressDao {
 
     public int add(Address address, int userId) throws ShopException;
 
-    public int delete(int id);
+    public int delete(int id) throws ShopException;
 
     public int update(Address address);
 

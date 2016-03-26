@@ -28,7 +28,7 @@
                 <label class="error">${errMap.password}</label>
                 <br/>
             </div>
-            <div id="button">
+            <div class="button">
                 <input id="but1" type="submit" value="提交"/><input id = "but2" type="reset" value="重置"/>
                 <div class="clear-float"></div>
             </div>

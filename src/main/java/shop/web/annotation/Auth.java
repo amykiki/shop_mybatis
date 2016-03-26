@@ -1,5 +1,6 @@
 package shop.web.annotation;
 
+import shop.model.EqualID;
 import shop.model.Role;
 
 import java.lang.annotation.Retention;
@@ -11,5 +12,5 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Auth {
     Role value() default Role.ADMIN;
-    boolean equalID() default false;
+    EqualID equalID() default EqualID.ALL;
 }

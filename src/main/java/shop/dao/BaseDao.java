@@ -80,7 +80,7 @@ public class BaseDao<T> {
         return keyID;
     }
 
-    public int delete(int id) {
+    public int delete(int id) throws ShopException{
         SqlSession session      = null;
         int        affectedRows = 0;
         try {
@@ -91,7 +91,7 @@ public class BaseDao<T> {
             session.commit();
         } catch (Exception e) {
             session.rollback();
-            throw new RuntimeException("Delete " + clz.getSimpleName() + " Failed", e);
+            throw new ShopException("Delete " + clz.getSimpleName() + " Failed " + e.getMessage());
         } finally {
             BatisUtil.closeSession(session);
         }
@@ -191,5 +191,23 @@ public class BaseDao<T> {
         pager.setBegin(begin);
         pager.setEnd(end);
         return pager;
+    }
+
+    public Object runMethod(String mName, Object[] params, Class<?>[] pClz) throws Exception{
+        SqlSession session = null;
+        Object obj= null;
+        try {
+            session = BatisUtil.getSession();
+            Object mapper = session.getMapper(clz);
+            Method m = mapper.getClass().getDeclaredMethod(mName, pClz);
+            obj=  m.invoke(mapper, params);
+            session.commit();
+        } catch (Exception e) {
+            session.rollback();
+            throw new Exception(e);
+        } finally {
+            BatisUtil.closeSession(session);
+        }
+        return obj;
     }
 }

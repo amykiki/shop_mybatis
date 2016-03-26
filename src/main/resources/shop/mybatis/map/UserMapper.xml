@@ -40,6 +40,16 @@
         DELETE FROM t_user WHERE id = #{id}
     </delete>
 
+    <sql id="inList">
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </sql>
+    <delete id="deleteLists">
+        DELETE FROM t_user WHERE id in
+        <include refid="inList"/>
+    </delete>
+
     <update id="update" parameterType="User">
         UPDATE t_user
         <set>
@@ -48,6 +58,15 @@
             <if test="role != null">role=#{role}</if>
         </set>
         WHERE id = #{id}
+    </update>
+
+    <update id="updateAuth" parameterType="map">
+        UPDATE t_user
+        <set>
+            <if test="role != null">role=#{role}</if>
+        </set>
+        WHERE id IN
+        <include refid="inList"/>
     </update>
 
     <select id="loadLists" resultType="User">
@@ -78,4 +97,5 @@
         SELECT count(*) FROM t_user
         <include refid="findWhere"/>
     </select>
+    
 </mapper>

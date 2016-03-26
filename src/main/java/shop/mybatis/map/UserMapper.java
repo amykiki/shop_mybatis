@@ -1,5 +1,7 @@
 package shop.mybatis.map;
 
+import org.apache.ibatis.annotations.Param;
+import shop.model.Role;
 import shop.model.User;
 
 import java.util.List;
@@ -22,4 +24,8 @@ public interface UserMapper {
     public List<User> find(Map<String, Object> map);
 
     public int findCount(Map<String, Object> map);
+
+    public int deleteLists(List<Integer> list);
+
+    public int updateAuth(@Param("role") Role role, @Param("list") List<Integer> list);
 }

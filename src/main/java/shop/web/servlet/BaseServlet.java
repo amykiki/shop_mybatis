@@ -1,6 +1,7 @@
 package shop.web.servlet;
 
 import shop.dao.DaoFactory;
+import shop.model.EqualID;
 import shop.model.Role;
 import shop.model.User;
 import shop.web.annotation.Auth;
@@ -18,6 +19,7 @@ import java.lang.reflect.Method;
  */
 public class BaseServlet extends HttpServlet {
     private final String redirectTo = "redirect:";
+
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getSession().getAttribute("lguser") == null) {
@@ -27,12 +29,15 @@ public class BaseServlet extends HttpServlet {
         }
         DaoFactory.setDao(this);
         String methodName = req.getParameter("method");
+        System.out.println("========begin " + methodName + "==========");
         try {
             Method method = this.getClass().getMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
             if (method.isAnnotationPresent(Auth.class)) {
                 int rc = checkAuth(req, method.getAnnotation(Auth.class));
                 if (rc == 1) {
-                    req.setAttribute("errMsg", "没有权限进行操作");
+                    if (req.getAttribute("errMsg") == null) {
+                        req.setAttribute("errMsg", "没有权限进行操作");
+                    }
                     req.getRequestDispatcher("/WEB-INF/util/error.jsp").forward(req, resp);
                     return;
                 }
@@ -70,18 +75,29 @@ public class BaseServlet extends HttpServlet {
     }
 
     private int checkAuth(HttpServletRequest req, Auth auth) {
-        User u = (User)req.getSession().getAttribute("lguser");
+        User u = (User) req.getSession().getAttribute("lguser");
         if (auth.value() == Role.ANON) {
             return 0;
         }
         if (u.getRole() == Role.ANON) {
             return 2;
         }
-        if (auth.equalID()) {
+        if (auth.equalID() != EqualID.ALL) {
             int id = -1;
             if (req.getParameter("userid") != null) {
-                id = Integer.parseInt(req.getParameter("userid"));
+                try {
+                    id = Integer.parseInt(req.getParameter("userid"));
+                } catch (NumberFormatException e) {
+                    req.setAttribute("errMsg", "id格式不正确");
+                    return 1;
+                }
+            }
+            if (auth.equalID() == EqualID.EQUAL) {
                 if (u.getId() != id) {
+                    return 1;
+                }
+            } else if (auth.equalID() == EqualID.NOEQUAL) {
+                if (u.getId() == id) {
                     return 1;
                 }
             }
