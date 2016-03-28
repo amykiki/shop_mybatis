@@ -218,6 +218,7 @@ public class UserServlet extends BaseServlet {
     }
 
     @Auth(value = Role.NORMAL)
+    // TODO: 2016/3/29  
     public String show(HttpServletRequest req, HttpServletResponse resp) {
         User cu = checkSelf(req, true);
         if (cu != null) {

@@ -25,7 +25,7 @@
         <c:choose>
             <c:when test="${not empty lguser.username}">
                 <span>欢迎[
-                <a href="<%=request.getContextPath()%>/user.do?method=show&userid=lguser.id">${lguser.nickname}</a>
+                <a href="<%=request.getContextPath()%>/user.do?method=show&userid=${lguser.id}">${lguser.nickname}</a>
                 ]登录商城
                 <a href="<%=request.getContextPath()%>/user.do?method=logout">注销</a>
             </c:when>
@@ -38,9 +38,14 @@
     <c:choose>
         <c:when test="${not empty lguser.username}">
             <ul>
-                <c:if test="${lguser.role == ADMIN}">
-                    <li><a href="<%=request.getContextPath()%>/user.do?method=list">用户列表</a></li>
-                </c:if>
+                <c:choose>
+                    <c:when test="${lguser.role == ADMIN}">
+                        <li><a href="<%=request.getContextPath()%>/user.do?method=list">用户列表</a></li>
+                    </c:when>
+                    <c:otherwise>
+                        <li><a href="<%=request.getContextPath()%>/user.do?method=updateUser&userid=${lguser.id}">用户编辑</a></li>
+                    </c:otherwise>
+                </c:choose>
             </ul>
         </c:when>
     </c:choose>
