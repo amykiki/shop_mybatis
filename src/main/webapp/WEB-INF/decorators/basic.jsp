@@ -1,4 +1,4 @@
-<%--
+<%@ page import="shop.model.Role" %><%--
   Created by IntelliJ IDEA.
   User: Amysue
   Date: 2016/3/21
@@ -16,22 +16,34 @@
     <decorator:head/>
 </head>
 <body>
+<c:set var="ADMIN" value="<%=Role.ADMIN%>"/>
+<c:set var="NORMAL" value="<%=Role.NORMAL%>"/>
+
 <h3>Amy's 商城系统</h3>
 <div id="nav">
     <div id="headright">
         <c:choose>
             <c:when test="${not empty lguser.username}">
                 <span>欢迎[
-                <a href="<%=request.getContextPath()%>/user.do?method=">${lguser.nickname}</a>
+                <a href="<%=request.getContextPath()%>/user.do?method=show&userid=lguser.id">${lguser.nickname}</a>
                 ]登录商城
                 <a href="<%=request.getContextPath()%>/user.do?method=logout">注销</a>
             </c:when>
             <c:otherwise>
                 <a href="<%=request.getContextPath()%>/user.do?method=loginInput">用户登录</a>
-                <a href="<%=request.getContextPath()%>/user.do?method=addInput">用户注册</a>
+                <a href="<%=request.getContextPath()%>/user.do?method=add">用户注册</a>
             </c:otherwise>
         </c:choose>
     </div>
+    <c:choose>
+        <c:when test="${not empty lguser.username}">
+            <ul>
+                <c:if test="${lguser.role == ADMIN}">
+                    <li><a href="<%=request.getContextPath()%>/user.do?method=list">用户列表</a></li>
+                </c:if>
+            </ul>
+        </c:when>
+    </c:choose>
     <hr/>
 </div>
 <decorator:body/>

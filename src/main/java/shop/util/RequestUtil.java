@@ -1,6 +1,8 @@
 package shop.util;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import shop.web.annotation.NUMBERS;
 import shop.web.annotation.NotNULL;
 
@@ -18,18 +20,20 @@ import java.util.Set;
  * Created by Amysue on 2016/3/23.
  */
 public class RequestUtil {
+    private static Logger logger = LogManager.getLogger();
 
     public static Object setFileds(Class<?> clz, HttpServletRequest req) {
         Map<String, String[]> paraMap  = req.getParameterMap();
         Set<String>           paraKeys = paraMap.keySet();
         req.setAttribute("errMap", null);
-        Map<String, String> errMap = null;
+        Map<String, String> errMap = new HashMap<>();
         try {
             Object bean  = clz.newInstance();
             Field  field = null;
             for (String key : paraKeys) {
                 try {
-                    field = clz.getField("key");
+                    field = clz.getDeclaredField(key);
+                    field.setAccessible(true);
                     String[] values = paraMap.get(key);
                     Object   value;
                     if (values.length > 1) {
@@ -39,10 +43,11 @@ public class RequestUtil {
                     }
                     String errMsg = validate(field, value);
                     if (!errMsg.equals("")) {
+                        logger.debug(key + ":" + errMsg);
                         errMap.put(key, errMsg);
-                    } else {
-                        BeanUtils.setProperty(bean, key, value);
                     }
+                    logger.debug("key = " + key + ", value = " + value);
+                    BeanUtils.setProperty(bean, key, value);
                 } catch (NoSuchFieldException | InvocationTargetException e) {
                     continue;
                 }
@@ -67,7 +72,7 @@ public class RequestUtil {
         String              errMsg      = "";
         for (int i = 0; i < annotations.length; i++) {
             Annotation annotation = annotations[i];
-            String     methodName = "validate" + annotation.getClass().getName();
+            String     methodName = "validate" + annotation.annotationType().getSimpleName();
             try {
                 Method m = RequestUtil.class.getDeclaredMethod(methodName, Object.class, Field.class);
                 m.setAccessible(true);
@@ -93,12 +98,13 @@ public class RequestUtil {
 
     private static String validateNotNULL(Object obj, Field f) {
         String errMsg = f.getAnnotation(NotNULL.class).errMsg();
+        int    length = f.getAnnotation(NotNULL.class).length();
         if (obj == null) {
             return errMsg;
         }
         if (obj instanceof String) {
             String str = (String) obj;
-            if (str.trim().equals("")) {
+            if (str.trim().equals("") || str.length() < length) {
                 return errMsg;
             }
         }
@@ -107,12 +113,12 @@ public class RequestUtil {
 
     private static String validateNUMBERS(Object obj, Field f) {
         String errMsg = f.getAnnotation(NUMBERS.class).errMsg();
-        int value = f.getAnnotation(NUMBERS.class).value();
+        int    value  = f.getAnnotation(NUMBERS.class).value();
         if (obj == null) {
             return errMsg;
         }
-        String str = (String)obj;
-        if (!str.matches("\\d{"+value+",}")) {
+        String str = (String) obj;
+        if (!str.matches("\\d{" + value + ",}")) {
             return errMsg;
         }
         return null;

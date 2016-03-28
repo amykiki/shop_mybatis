@@ -1,11 +1,10 @@
 package shop.web.servlet;
 
 import shop.dao.IUserDao;
-import shop.dao.UserDao;
-import shop.model.EqualID;
 import shop.model.Pager;
 import shop.model.Role;
 import shop.model.User;
+import shop.util.RequestUtil;
 import shop.util.ShopDi;
 import shop.util.ShopException;
 import shop.web.annotation.Auth;
@@ -14,7 +13,10 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Amysue on 2016/3/23.
@@ -62,12 +64,41 @@ public class UserServlet extends BaseServlet {
 
     }
 
+    @Auth(value = Role.ANON)
     public String loginInput(HttpServletRequest req, HttpServletResponse resp) {
         User curUser = (User) req.getSession().getAttribute("lguser");
         if (curUser.getRole() != Role.ANON) {
             return getRedirectTo() + "/user.do?method=list";
         }
         return "WEB-INF/user/login.jsp";
+    }
+
+    @Auth(value = Role.ANON)
+    public String addInput(HttpServletRequest req, HttpServletResponse resp) {
+        User                u       = (User) RequestUtil.setFileds(User.class, req);
+        Map<String, String> errMap  = (Map<String, String>) req.getAttribute("errMap");
+        boolean             addFail = false;
+        if (errMap.isEmpty() && u.getUsername() != null) {
+            try {
+                udao.add(u);
+            } catch (ShopException e) {
+                errMap.put("username", e.getMessage());
+                addFail = true;
+            }
+        } else {
+            logger.debug("对象转换失败");
+            addFail = true;
+        }
+        if (addFail == true) {
+            req.setAttribute("cuser", u);
+            return "/WEB-INF/user/addInput.jsp";
+        }
+        return "WEB-INF/user/login.jsp";
+    }
+
+    @Auth(value = Role.ANON)
+    public String add(HttpServletRequest req, HttpServletResponse resp) {
+        return "/WEB-INF/user/addInput.jsp";
     }
 
     @Auth(Role.NORMAL)
@@ -120,21 +151,43 @@ public class UserServlet extends BaseServlet {
         return "/user.do?method=list";
     }
 
-    @Auth(value = Role.ADMIN)
-    public String update(HttpServletRequest req, HttpServletResponse resp) {
-
-        return null;
+    @Auth(value = Role.NORMAL)
+    public String updateUser(HttpServletRequest req, HttpServletResponse resp) {
+        User cu = checkSelf(req, false);
+        if (cu == null) {
+            req.setAttribute("errMsg", "没有权限进行操作");
+            return "/WEB-INF/util/error.jsp";
+        }
+        req.setAttribute("cuser", cu);
+        return "/WEB-INF/user/updateInput.jsp";
     }
 
-    @Auth(value = Role.NORMAL, equalID = EqualID.EQUAL)
-    public String updateSelf(HttpServletRequest req, HttpServletResponse resp) {
-        return null;
+    @Auth(value = Role.NORMAL)
+    public String updateUserInput(HttpServletRequest req, HttpServletResponse resp) {
+        User cu = checkSelf(req, false);
+        if (cu == null) {
+            req.setAttribute("errMsg", "没有权限进行修改");
+            return "/WEB-INF/util/error.jsp";
+        }
+        User u  = (User) RequestUtil.setFileds(User.class, req);
+        u.setId(cu.getId());
+        u.setUsername(cu.getUsername());
+        Map<String, String> errMap = (Map<String, String>) req.getAttribute("errMap");
+        if (errMap.isEmpty() && u.getNickname() != null) {
+            udao.update(u);
+        } else {
+            logger.debug("对象转换失败");
+        }
+        req.setAttribute("cuser", u);
+        req.setAttribute("olduser", cu);
+        return "/WEB-INF/user/updateInput.jsp";
     }
+
 
     @Auth(value = Role.ADMIN)
     public String changeAuth(HttpServletRequest req, HttpServletResponse resp) {
-        List<Integer> list = getSelected(req);
-        String rolestr = req.getParameter("roles");
+        List<Integer> list    = getSelected(req);
+        String        rolestr = req.getParameter("roles");
 
         try {
             Role role = Role.valueOf(rolestr);
@@ -164,5 +217,38 @@ public class UserServlet extends BaseServlet {
         return list;
     }
 
+    @Auth(value = Role.NORMAL)
+    public String show(HttpServletRequest req, HttpServletResponse resp) {
+        User cu = checkSelf(req, true);
+        if (cu != null) {
+            req.setAttribute("cuser", cu);
+            return "/WEB-INF/user/show.jsp";
+        } else {
+            req.setAttribute("errMsg", "用户id不正确");
+            return "/WEB-INF/util/error.jsp";
+        }
+    }
+
+    private User checkSelf(HttpServletRequest req, boolean addr) {
+        int  id = getId(req);
+        User u  = (User) req.getSession().getAttribute("lguser");
+        if (id == u.getId() || u.getRole() == Role.ADMIN) {
+            User cu = udao.load(id, addr);
+            if (cu != null) {
+                return cu;
+            }
+        }
+        return null;
+
+    }
+
+    private int getId(HttpServletRequest req) {
+        try {
+            int id = Integer.parseInt(req.getParameter("userid"));
+            return id;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
 
 }

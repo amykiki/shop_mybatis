@@ -84,4 +84,20 @@ public class UserDao extends BaseDao<User> implements IUserDao {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public User load(int id, boolean addr) {
+        if (addr) {
+            return load(id);
+        } else {
+            Object[]   params = new Object[]{id};
+            Class<?>[] pClz   = new Class[]{int.class};
+            try {
+                return (User) super.runMethod("loadNoAddr", params, pClz);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 }

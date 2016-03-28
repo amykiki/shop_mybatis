@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
 public @interface NotNULL {
     boolean value() default true;
 
+    int length() default 0;
     String errMsg();
 
 }

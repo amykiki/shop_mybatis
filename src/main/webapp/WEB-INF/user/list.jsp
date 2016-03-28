@@ -1,12 +1,11 @@
 <%@ page import="shop.model.Role" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.HashMap" %>
-Created by IntelliJ IDEA.
+<%--Created by IntelliJ IDEA.
 User: Amysue
 Date: 2016/3/23
 Time: 21:36
-To change this template use File | Settings | File Templates.
---%>
+To change this template use File | Settings | File Templates.--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -136,7 +135,7 @@ To change this template use File | Settings | File Templates.
                     <td>${u.id}</td>
                     <td>${u.username}</td>
                     <td>${u.password}</td>
-                    <td><a href="/user.do?method=show">${u.nickname}</a></td>
+                    <td><a href="/user.do?method=show&userid=${u.id}">${u.nickname}</a></td>
                     <c:choose>
                         <c:when test="${u.id == lguser.id}">
                             <c:choose>
@@ -147,7 +146,7 @@ To change this template use File | Settings | File Templates.
                                     <td>普通用户</td>
                                 </c:otherwise>
                             </c:choose>
-                            <td><a href="#">编辑</a></td>
+                            <td><a href="/user.do?method=updateUser&userid=${u.id}">编辑</a></td>
                             <td>&nbsp;</td>
                         </c:when>
                         <c:otherwise>
@@ -159,7 +158,7 @@ To change this template use File | Settings | File Templates.
                                     <td><a href="${configurl}&method=changeAuth&userids=${u.id}&roles=<%=Role.ADMIN.toString()%>">普通用户</a></td>
                                 </c:otherwise>
                             </c:choose>
-                            <td><a href="#">编辑</a>&nbsp;
+                            <td><a href="/user.do?method=updateUser&userid=${u.id}">编辑</a>&nbsp;
                                 <a href="${configurl}&method=delete&userids=${u.id}">删除</a>
                             </td>
                             <td><input type="checkbox" name="userids"

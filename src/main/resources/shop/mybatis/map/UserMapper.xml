@@ -31,6 +31,10 @@
         ORDER BY t2.id
     </select>
 
+    <select id="loadNoAddr" parameterType="int" resultType="User">
+        SELECT * FROM t_user WHERE id = #{id}
+    </select>
+
     <insert id="add" parameterType="User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO t_user
         VALUES (NULL, #{username}, #{password}, #{nickname}, #{role})

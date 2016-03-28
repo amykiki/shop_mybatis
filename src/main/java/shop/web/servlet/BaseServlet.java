@@ -1,5 +1,7 @@
 package shop.web.servlet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import shop.dao.DaoFactory;
 import shop.model.EqualID;
 import shop.model.Role;
@@ -19,6 +21,7 @@ import java.lang.reflect.Method;
  */
 public class BaseServlet extends HttpServlet {
     private final String redirectTo = "redirect:";
+    protected static Logger logger = LogManager.getLogger();
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -45,6 +48,10 @@ public class BaseServlet extends HttpServlet {
                     resp.sendRedirect("/user.do?method=loginInput");
                     return;
                 }
+                if (rc == 3) {
+                    resp.sendRedirect("/user.do?method=list");
+                    return;
+                }
             }
             String nextPage = (String) method.invoke(this, req, resp);
             if (nextPage.startsWith(redirectTo)) {
@@ -69,6 +76,7 @@ public class BaseServlet extends HttpServlet {
      * return 0: auth check pass
      * return 1: user do not have the auth to continue the next method, return to error.jsp
      * return 2: user not login, need return to login page
+     * return 3: user has logined, do not access these pages;
      */
     public String getRedirectTo() {
         return redirectTo;
@@ -76,14 +84,27 @@ public class BaseServlet extends HttpServlet {
 
     private int checkAuth(HttpServletRequest req, Auth auth) {
         User u = (User) req.getSession().getAttribute("lguser");
+
         if (auth.value() == Role.ANON) {
-            return 0;
+            if (u.getRole() == Role.ANON) {
+                return 0;
+            } else {
+                return 3;
+            }
         }
-        if (u.getRole() == Role.ANON) {
-            return 2;
+
+        if (auth.value() == Role.NORMAL) {
+            if (u.getRole() == Role.ANON) {
+                return 2;
+            }
+        } else if (auth.value() == Role.ADMIN) {
+            if (u.getRole() != Role.ADMIN) {
+                return 1;
+            }
         }
+
+        int id = -1;
         if (auth.equalID() != EqualID.ALL) {
-            int id = -1;
             if (req.getParameter("userid") != null) {
                 try {
                     id = Integer.parseInt(req.getParameter("userid"));
@@ -102,10 +123,9 @@ public class BaseServlet extends HttpServlet {
                 }
             }
         }
-        if (u.getRole().getCode() > auth.value().getCode()) {
-            return 1;
-        }
         return 0;
+
+
 
     }
 }
