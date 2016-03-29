@@ -98,6 +98,27 @@ public class BaseDao<T> {
         return affectedRows;
     }
 
+    public int deleteLists(List<Integer> list) throws ShopException {
+        if (list == null || list.size() == 0) {
+            return 0;
+        }
+        SqlSession session      = null;
+        int        affectedRows = 0;
+        try {
+            session = BatisUtil.getSession();
+            Object mapper = session.getMapper(clz);
+            Method deleteLists = mapper.getClass().getDeclaredMethod("deleteLists", List.class);
+            affectedRows = (int) deleteLists.invoke(mapper, list);
+            session.commit();
+        } catch (Exception e) {
+            session.rollback();
+            throw new ShopException("Delete " + clz.getSimpleName() + " Failed " + e.getMessage());
+        } finally {
+            BatisUtil.closeSession(session);
+        }
+        return affectedRows;
+    }
+
     public int update(T obj) {
         SqlSession session      = null;
         int        affectedRows = 0;

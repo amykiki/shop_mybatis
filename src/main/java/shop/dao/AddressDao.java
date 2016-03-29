@@ -19,7 +19,7 @@ public class AddressDao extends BaseDao<Address> implements IAddressDao{
         DaoFactory.setDao(this);
     }
 
-    @ShopDi
+    @ShopDi("userDao")
     public void setUserDao(IUserDao userDao) {
         System.out.println("************Set User Dao Begin**************");
         this.userDao = userDao;

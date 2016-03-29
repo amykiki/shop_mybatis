@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Amysue on 2016/3/23.
@@ -125,7 +127,23 @@ public class BaseServlet extends HttpServlet {
         }
         return 0;
 
+    }
 
-
+    protected List<Integer> getSelected(HttpServletRequest req, String idName, int excludeId) {
+        String[]      idstrs = req.getParameterValues(idName);
+        List<Integer> list   = new ArrayList<>();
+        if (idstrs != null) {
+            for (String idstr : idstrs) {
+                try {
+                    int id = Integer.parseInt(idstr);
+                    if (id != excludeId) {
+                        list.add(id);
+                    }
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+            }
+        }
+        return list;
     }
 }

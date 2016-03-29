@@ -24,6 +24,17 @@
         DELETE FROM t_address WHERE id = #{id}
     </delete>
 
+    <sql id="inList">
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </sql>
+
+    <delete id="deleteLists">
+        DELETE FROM t_address WHERE id in
+        <include refid="inList"/>
+    </delete>
+
     <update id="update" parameterType="Address">
         UPDATE t_address
         <set>

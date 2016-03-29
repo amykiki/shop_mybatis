@@ -58,20 +58,6 @@ public class UserDao extends BaseDao<User> implements IUserDao {
     }
 
     @Override
-    public int deleteLists(List<Integer> list) throws ShopException {
-        if (list == null || list.size() == 0) {
-            return 0;
-        }
-        Object[] params = new Object[]{list};
-        Class<?>[] pClz = new Class[]{List.class};
-        try {
-            return (int)super.runMethod("deleteLists", params, pClz);
-        } catch (Exception e) {
-            throw new ShopException(e.getMessage());
-        }
-    }
-
-    @Override
     public int updateAuth(Role role, List<Integer> list) {
         if (list == null || list.size() == 0) {
             return 0;

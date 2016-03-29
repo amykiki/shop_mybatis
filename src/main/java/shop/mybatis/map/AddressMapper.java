@@ -13,6 +13,7 @@ public interface AddressMapper {
     public int add(Address address);
 
     public int delete(int id);
+    public int deleteLists(List<Integer> list);
 
     public int update(Address address);
 

@@ -58,4 +58,13 @@
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/user.do</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>AddressSevlet</servlet-name>
+        <servlet-class>shop.web.servlet.AddressServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddressSevlet</servlet-name>
+        <url-pattern>/address.do</url-pattern>
+    </servlet-mapping>
 </web-app>

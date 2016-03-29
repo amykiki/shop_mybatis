@@ -169,7 +169,7 @@ public class UserServlet extends BaseServlet {
             req.setAttribute("errMsg", "没有权限进行修改");
             return "/WEB-INF/util/error.jsp";
         }
-        User u  = (User) RequestUtil.setFileds(User.class, req);
+        User u = (User) RequestUtil.setFileds(User.class, req);
         u.setId(cu.getId());
         u.setUsername(cu.getUsername());
         Map<String, String> errMap = (Map<String, String>) req.getAttribute("errMap");
@@ -199,27 +199,14 @@ public class UserServlet extends BaseServlet {
     }
 
     private List<Integer> getSelected(HttpServletRequest req) {
-        String[]      idstrs = req.getParameterValues("userids");
-        List<Integer> list   = new ArrayList<>();
-        User          u      = (User) req.getSession().getAttribute("lguser");
-        if (idstrs != null) {
-            for (String idstr : idstrs) {
-                try {
-                    int id = Integer.parseInt(idstr);
-                    if (id != u.getId()) {
-                        list.add(id);
-                    }
-                } catch (NumberFormatException e) {
-                    continue;
-                }
-            }
-        }
-        return list;
+        User u = (User) req.getSession().getAttribute("lguser");
+        return super.getSelected(req, "userids", u.getId());
     }
 
     @Auth(value = Role.NORMAL)
     // TODO: 2016/3/29  
     public String show(HttpServletRequest req, HttpServletResponse resp) {
+        logger.debug("request userid = " + req.getParameter("userid"));
         User cu = checkSelf(req, true);
         if (cu != null) {
             req.setAttribute("cuser", cu);

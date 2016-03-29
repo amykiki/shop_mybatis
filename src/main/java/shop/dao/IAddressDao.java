@@ -14,7 +14,7 @@ public interface IAddressDao {
     public int add(Address address, int userId) throws ShopException;
 
     public int delete(int id) throws ShopException;
-
+    public int deleteLists(List<Integer> list) throws ShopException;
     public int update(Address address);
 
     public List<Address> loadLists();
