@@ -1,15 +1,11 @@
 package shop.dao;
 
-import org.apache.ibatis.session.SqlSession;
-import shop.model.Pager;
 import shop.model.Role;
 import shop.model.User;
 import shop.mybatis.map.UserMapper;
-import shop.util.BatisUtil;
 import shop.util.ShopException;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Amysue on 2016/3/17.
@@ -62,27 +58,27 @@ public class UserDao extends BaseDao<User> implements IUserDao {
         if (list == null || list.size() == 0) {
             return 0;
         }
-        Object[] params = new Object[]{role, list};
-        Class<?>[] pClz = new Class[]{Role.class, List.class};
+        Object[]   params = new Object[]{role, list};
+        Class<?>[] pClz   = new Class[]{Role.class, List.class};
         try {
-            return (int)super.runMethod("updateAuth", params, pClz);
+            return (int) super.runMethod("updateAuth", params, pClz);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public User load(int id, boolean addr) {
-        if (addr) {
-            return load(id);
-        } else {
-            Object[]   params = new Object[]{id};
-            Class<?>[] pClz   = new Class[]{int.class};
-            try {
+    public User load(int id, boolean addr) throws ShopException{
+        try {
+            if (addr) {
+                return load(id);
+            } else {
+                Object[]   params = new Object[]{id};
+                Class<?>[] pClz   = new Class[]{int.class};
                 return (User) super.runMethod("loadNoAddr", params, pClz);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
+        } catch (Exception e) {
+            throw new ShopException("获取用户id为" + id + "的对象失败");
         }
     }
 

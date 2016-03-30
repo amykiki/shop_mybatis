@@ -56,7 +56,7 @@ public class RequestUtil {
                 }
                 logger.debug("key = " + annoKey + ", value = " + paraValue);
                 try {
-                    if (declarFiled.isAnnotationPresent(NotNull.class) || paraValue != null) {
+                    if (declarFiled.isAnnotationPresent(NotNull.class) || NotNullCheck(paraValue)) {
                         String errMsg = validate(declarFiled, paraValue);
                         if (!errMsg.equals("")) {
                             logger.debug(annoKey + ":" + errMsg);
@@ -76,6 +76,18 @@ public class RequestUtil {
 
     }
 
+    private static boolean NotNullCheck(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (o instanceof String) {
+            String str = (String) o;
+            if (str.trim().equals("")) {
+                return false;
+            }
+        }
+        return true;
+    }
     public static String validate(Field field, Object value) {
         Annotation[]        annotations = field.getDeclaredAnnotations();
         String              errMsg      = "";
@@ -125,7 +137,7 @@ public class RequestUtil {
 
     private static String CheckNum(Object obj, Field f) {
         String errMsg = f.getAnnotation(CheckNum.class).errMsg();
-        int    value  = f.getAnnotation(CheckNum.class).value();
+        int    value  = f.getAnnotation(CheckNum.class).length();
         if (obj == null) {
             return errMsg;
         }

@@ -10,14 +10,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>添加${lguser.nickname}地址</title>
+    <title>修改${lguser.nickname}地址</title>
+    <script type="text/javascript">
+        function resetOld() {
+            document.getElementById("recipient").value = document.getElementById("oldrecipient").value;
+            document.getElementById("phone").value = document.getElementById("oldphone").value;
+            document.getElementById("addressInfo").value = document.getElementById("oldaddressInfo").value;
+            document.getElementById("zip").value = document.getElementById("oldzip").value;
+        }
+    </script>
 </head>
 <body>
 ${errMsg}
 <div id="formwrapper">
-    <form action="/address.do?method=addInput" method="post">
+    <form action="/address.do?method=updateInput" method="post">
         <fieldset>
-            <legend>添加用户[${lguser.nickname}]地址</legend>
+            <legend>修改用户[${lguser.nickname}]地址</legend>
             <div>
                 <label for="recipient">收件人</label>
                 <input type="text" name="recipient" id="recipient" value="${caddr.recipient}"/>
@@ -44,9 +52,15 @@ ${errMsg}
                 <label class="error">${errMap.zip}</label>
                 <br/>
             </div>
+            <input type="hidden" name="addrid" value="${caddr.id}">
+            <input type="hidden" name="userid" value="${lguser.id}">
+            <input type="hidden" id="oldrecipient" value="${oldaddr.recipient}"/>
+            <input type="hidden" id="oldphone" value="${oldaddr.phone}"/>
+            <input type="hidden" id="oldaddressInfo" value="${oldaddr.addressInfo}"/>
+            <input type="hidden" id="oldzip" value="${oldaddr.zip}"/>
             <div class="button">
-                <input id="but1" type="submit" value="添加"/>
-                <input id="but2" type="reset" value="重置"/>
+                <input id="but1" type="submit" value="修改"/>
+                <input id="but2" type="button" value="重置" onclick="resetOld()"/>
                 <div class="clear-float"></div>
             </div>
         </fieldset>

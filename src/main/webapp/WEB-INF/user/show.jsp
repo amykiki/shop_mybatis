@@ -114,7 +114,7 @@
                         </td>
                         <c:if test="${cuser.id == lguser.id}">
                             <td>
-                                <a href="/address.do?method=updateAddr&addrid=${addr.id}">编辑</a>&nbsp;
+                                <a href="/address.do?method=update&addrid=${addr.id}">编辑</a>&nbsp;
                                 <a href="/address.do?method=delete&addrids=${addr.id}&userid=${cuser.id}">删除</a>
                             </td>
                             <td>

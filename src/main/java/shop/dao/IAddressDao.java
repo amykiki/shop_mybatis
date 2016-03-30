@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Amysue on 2016/3/20.
  */
 public interface IAddressDao {
-    public Address load(int id);
+    public Address load(int id) throws ShopException;
 
     public int add(Address address, int userId) throws ShopException;
 

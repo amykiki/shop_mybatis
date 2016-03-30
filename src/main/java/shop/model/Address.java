@@ -13,15 +13,15 @@ public class Address {
     private String recipient;
 
     @AddFiled @UpdateFiled @NotNull
-    @CheckEmpty(errMsg = "收货地址不能为空")
+    @CheckEmpty(length = 3, errMsg = "收货地址不能为空,长度不能小于3位")
     private String addressInfo;
 
     @AddFiled @UpdateFiled @NotNull
-    @CheckNum(value = 6, errMsg = "电话长度不能小于6位")
+    @CheckNum(length = 6, errMsg = "电话必须为数字，长度不能小于6位")
     private String phone;
 
     @AddFiled @UpdateFiled
-    @CheckNum(value = 3, errMsg = "邮政编码不能小于3位")
+    @CheckNum(length = 3, errMsg = "邮政编码必须为数字，不能小于3位")
     private String zip;
 
     private User user;

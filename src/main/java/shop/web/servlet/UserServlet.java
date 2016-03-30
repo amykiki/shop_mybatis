@@ -206,6 +206,10 @@ public class UserServlet extends BaseServlet {
         return super.getSelected(req, "userids", u.getId());
     }
 
+    private User checkSelf(HttpServletRequest req, boolean addr) {
+        return super.checkSelf(req, addr, udao);
+    }
+
     @Auth(value = Role.NORMAL)
     public String show(HttpServletRequest req, HttpServletResponse resp) {
         logger.debug("request userid = " + req.getParameter("userid"));
@@ -215,21 +219,9 @@ public class UserServlet extends BaseServlet {
             return "/WEB-INF/user/show.jsp";
         } else {
             req.setAttribute("errMsg", "用户id不正确");
+            logger.debug("用户id不正确");
             return "/WEB-INF/util/error.jsp";
         }
-    }
-
-    private User checkSelf(HttpServletRequest req, boolean addr) {
-        int  id = getUserId(req);
-        User u  = (User) req.getSession().getAttribute("lguser");
-        if (id == u.getId() || u.getRole() == Role.ADMIN) {
-            User cu = udao.load(id, addr);
-            if (cu != null) {
-                return cu;
-            }
-        }
-        return null;
-
     }
 
 }

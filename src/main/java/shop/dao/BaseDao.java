@@ -23,7 +23,7 @@ public class BaseDao<T> {
         this.clz = clz;
     }
 
-    public T load(int id) {
+    public T load(int id) throws ShopException{
         T          obj     = null;
         SqlSession session = null;
         try {
@@ -32,9 +32,12 @@ public class BaseDao<T> {
             Method load   = mapper.getClass().getDeclaredMethod("load", int.class);
             obj = (T) load.invoke(mapper, id);
         } catch (Exception e) {
-            throw new RuntimeException("Load " + clz.getSimpleName() + " Failed", e);
+            throw new ShopException("Load " + clz.getSimpleName() + " Failed", e);
         } finally {
             BatisUtil.closeSession(session);
+        }
+        if (obj == null) {
+            throw new ShopException("Load " + clz.getSimpleName() + " Failed");
         }
         return obj;
     }

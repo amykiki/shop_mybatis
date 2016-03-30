@@ -26,7 +26,7 @@ public class AddressDao extends BaseDao<Address> implements IAddressDao{
     }
 
     @Override
-    public Address load(int id) {
+    public Address load(int id) throws ShopException {
         return super.load(id);
     }
 

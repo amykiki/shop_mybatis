@@ -14,8 +14,8 @@ import java.util.Map;
 public interface IUserDao {
     public int add(User u) throws ShopException;
 
-    public User load(int id);
-    public User load(int id, boolean addr);
+    public User load(int id) throws ShopException;
+    public User load(int id, boolean addr) throws ShopException;
 
     public int delete(int id) throws ShopException;
 

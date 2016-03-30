@@ -3,9 +3,11 @@ package shop.web.servlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import shop.dao.DaoFactory;
+import shop.dao.IUserDao;
 import shop.model.EqualID;
 import shop.model.Role;
 import shop.model.User;
+import shop.util.ShopException;
 import shop.web.annotation.Auth;
 
 import javax.servlet.ServletException;
@@ -17,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Amysue on 2016/3/23.
@@ -34,7 +37,7 @@ public class BaseServlet extends HttpServlet {
         }
         DaoFactory.setDao(this);
         String methodName = req.getParameter("method");
-        System.out.println("========begin " + methodName + "==========");
+        logger.debug(req.getRequestURL().append('?').append(getQuery(req)));
         try {
             Method method = this.getClass().getMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
             if (method.isAnnotationPresent(Auth.class)) {
@@ -154,5 +157,43 @@ public class BaseServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             return -1;
         }
+    }
+
+    protected User checkSelf(HttpServletRequest req, boolean addr, IUserDao udao) {
+        int  id = getUserId(req);
+        User u  = (User) req.getSession().getAttribute("lguser");
+        if (id == u.getId() || u.getRole() == Role.ADMIN) {
+            User cu = null;
+            try {
+                cu = udao.load(id, addr);
+                return cu;
+            } catch (ShopException e) {
+                logger.debug("用户id为" + id + "的用户不存在");
+            }
+        }
+        return null;
+
+    }
+
+    protected int getId(HttpServletRequest req, String idName) {
+        try {
+            int id = Integer.parseInt(req.getParameter(idName));
+            return id;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    private String getQuery(HttpServletRequest req) {
+        String                query  = "";
+        Map<String, String[]> params = req.getParameterMap();
+        for (String key : params.keySet()) {
+            String[] values = params.get(key);
+            for (String v : values) {
+                query += key + "=" + v + "&";
+            }
+        }
+        query = query.substring(0, query.length() - 1);
+        return query;
     }
 }
