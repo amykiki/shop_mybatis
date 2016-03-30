@@ -146,4 +146,13 @@ public class BaseServlet extends HttpServlet {
         }
         return list;
     }
+
+    protected int getUserId(HttpServletRequest req) {
+        try {
+            int id = Integer.parseInt(req.getParameter("userid"));
+            return id;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
 }

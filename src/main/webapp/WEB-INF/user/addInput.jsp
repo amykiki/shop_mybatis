@@ -17,6 +17,7 @@
     <form action="/user.do?method=addInput" method="post">
         <fieldset>
             <legend>注册用户</legend>
+            <label class="error">${errMap.field}</label>
             <div>
                 <label for="name">用户名</label>
                 <input type="text" name="username" id="name"

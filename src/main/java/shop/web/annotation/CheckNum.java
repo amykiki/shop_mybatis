@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NUMBERS {
+public @interface CheckNum {
     int value();
 
     String errMsg();

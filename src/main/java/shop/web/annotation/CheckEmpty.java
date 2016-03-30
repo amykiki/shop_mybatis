@@ -10,10 +10,8 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NotNULL {
-    boolean value() default true;
-
-    int length() default 0;
+public @interface CheckEmpty {
     String errMsg();
+    int length() default 1;
 
 }

@@ -3,18 +3,16 @@ package shop.util;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import shop.web.annotation.NUMBERS;
-import shop.web.annotation.NotNULL;
+import shop.web.annotation.CheckNum;
+import shop.web.annotation.CheckEmpty;
+import shop.web.annotation.NotNull;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Amysue on 2016/3/23.
@@ -22,57 +20,71 @@ import java.util.Set;
 public class RequestUtil {
     private static Logger logger = LogManager.getLogger();
 
-    public static Object setFileds(Class<?> clz, HttpServletRequest req) {
+    public static Object setFileds(Class<?> clz, HttpServletRequest req, Class annoClz) {
         Map<String, String[]> paraMap  = req.getParameterMap();
         Set<String>           paraKeys = paraMap.keySet();
-        req.setAttribute("errMap", null);
-        Map<String, String> errMap = new HashMap<>();
-        try {
-            Object bean  = clz.newInstance();
-            Field  field = null;
-            for (String key : paraKeys) {
-                try {
-                    field = clz.getDeclaredField(key);
-                    field.setAccessible(true);
-                    String[] values = paraMap.get(key);
-                    Object   value;
-                    if (values.length > 1) {
-                        value = values;
-                    } else {
-                        value = values[0];
-                    }
-                    String errMsg = validate(field, value);
-                    if (!errMsg.equals("")) {
-                        logger.debug(key + ":" + errMsg);
-                        errMap.put(key, errMsg);
-                    }
-                    logger.debug("key = " + key + ", value = " + value);
-                    BeanUtils.setProperty(bean, key, value);
-                } catch (NoSuchFieldException | InvocationTargetException e) {
-                    continue;
-                }
+        Map<String, String>   errMap   = new HashMap<>();
 
-            }
-            if (errMap != null) {
-                req.setAttribute("errMap", errMap);
-            }
-            return bean;
+        Field[] declarFileds = clz.getDeclaredFields();
+        req.setAttribute("errMap", errMap);
+        Object bean = null;
+        try {
+            bean = clz.newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        return null;
+        for (Field declarFiled : declarFileds) {
+            declarFiled.setAccessible(true);
+            String annoKey = declarFiled.getName();
+            if (declarFiled.isAnnotationPresent(annoClz)) {
+                String[] paraValues = paraMap.get(annoKey);
+                if (paraValues == null) {
+                    logger.debug(annoKey + " is not existed");
+                    if (declarFiled.isAnnotationPresent(NotNull.class)) {
+                        errMap.put(annoKey, annoKey + "属性是必须的");
+                        logger.debug(annoKey + " is NULL");
+                    }
+                    continue;
+                }
+                Object paraValue;
+                if (paraValues.length > 1) {
+                    paraValue = paraValues;
+                } else {
+                    paraValue = paraValues[0];
+                }
+                logger.debug("key = " + annoKey + ", value = " + paraValue);
+                try {
+                    if (declarFiled.isAnnotationPresent(NotNull.class) || paraValue != null) {
+                        String errMsg = validate(declarFiled, paraValue);
+                        if (!errMsg.equals("")) {
+                            logger.debug(annoKey + ":" + errMsg);
+                            errMap.put(annoKey, errMsg);
+                        }
+                    }
+                    BeanUtils.setProperty(bean, annoKey, paraValue);
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return bean;
 
     }
 
     public static String validate(Field field, Object value) {
-        Map<String, String> errMap      = new HashMap<>();
         Annotation[]        annotations = field.getDeclaredAnnotations();
         String              errMsg      = "";
         for (int i = 0; i < annotations.length; i++) {
             Annotation annotation = annotations[i];
-            String     methodName = "validate" + annotation.annotationType().getSimpleName();
+            String     methodName = annotation.annotationType().getSimpleName();
+            if (!methodName.startsWith("Check")) {
+                continue;
+            }
             try {
                 Method m = RequestUtil.class.getDeclaredMethod(methodName, Object.class, Field.class);
                 m.setAccessible(true);
@@ -96,9 +108,9 @@ public class RequestUtil {
         return errMsg;
     }
 
-    private static String validateNotNULL(Object obj, Field f) {
-        String errMsg = f.getAnnotation(NotNULL.class).errMsg();
-        int    length = f.getAnnotation(NotNULL.class).length();
+    private static String CheckEmpty(Object obj, Field f) {
+        String errMsg = f.getAnnotation(CheckEmpty.class).errMsg();
+        int    length = f.getAnnotation(CheckEmpty.class).length();
         if (obj == null) {
             return errMsg;
         }
@@ -111,9 +123,9 @@ public class RequestUtil {
         return null;
     }
 
-    private static String validateNUMBERS(Object obj, Field f) {
-        String errMsg = f.getAnnotation(NUMBERS.class).errMsg();
-        int    value  = f.getAnnotation(NUMBERS.class).value();
+    private static String CheckNum(Object obj, Field f) {
+        String errMsg = f.getAnnotation(CheckNum.class).errMsg();
+        int    value  = f.getAnnotation(CheckNum.class).value();
         if (obj == null) {
             return errMsg;
         }

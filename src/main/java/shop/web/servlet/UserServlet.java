@@ -7,16 +7,15 @@ import shop.model.User;
 import shop.util.RequestUtil;
 import shop.util.ShopDi;
 import shop.util.ShopException;
+import shop.web.annotation.AddFiled;
 import shop.web.annotation.Auth;
+import shop.web.annotation.UpdateFiled;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Amysue on 2016/3/23.
@@ -75,11 +74,12 @@ public class UserServlet extends BaseServlet {
 
     @Auth(value = Role.ANON)
     public String addInput(HttpServletRequest req, HttpServletResponse resp) {
-        User                u       = (User) RequestUtil.setFileds(User.class, req);
+        User                u       = (User) RequestUtil.setFileds(User.class, req, AddFiled.class);
         Map<String, String> errMap  = (Map<String, String>) req.getAttribute("errMap");
         boolean             addFail = false;
-        if (errMap.isEmpty() && u.getUsername() != null) {
+        if (errMap.isEmpty()) {
             try {
+                u.setRole(Role.NORMAL);
                 udao.add(u);
             } catch (ShopException e) {
                 errMap.put("username", e.getMessage());
@@ -127,11 +127,11 @@ public class UserServlet extends BaseServlet {
             System.out.println(e.getMessage());
         }
 
-        if (req.getParameter("username") != null) {
+        if (req.getParameter("username") != null && !req.getParameter("username").trim().equals("")) {
             params.put("username", req.getParameter("username"));
         }
 
-        if (req.getParameter("nickname") != null) {
+        if (req.getParameter("nickname") != null && !req.getParameter("nickname").trim().equals("")) {
             params.put("nickname", req.getParameter("nickname"));
         }
         req.setAttribute("cuser", params);
@@ -169,11 +169,14 @@ public class UserServlet extends BaseServlet {
             req.setAttribute("errMsg", "没有权限进行修改");
             return "/WEB-INF/util/error.jsp";
         }
-        User u = (User) RequestUtil.setFileds(User.class, req);
+        User u = (User) RequestUtil.setFileds(User.class, req, UpdateFiled.class);
+        if (u == null) {
+            u = new User();
+        }
         u.setId(cu.getId());
         u.setUsername(cu.getUsername());
         Map<String, String> errMap = (Map<String, String>) req.getAttribute("errMap");
-        if (errMap.isEmpty() && u.getNickname() != null) {
+        if (errMap.isEmpty()) {
             udao.update(u);
         } else {
             logger.debug("对象转换失败");
@@ -204,7 +207,6 @@ public class UserServlet extends BaseServlet {
     }
 
     @Auth(value = Role.NORMAL)
-    // TODO: 2016/3/29  
     public String show(HttpServletRequest req, HttpServletResponse resp) {
         logger.debug("request userid = " + req.getParameter("userid"));
         User cu = checkSelf(req, true);
@@ -218,7 +220,7 @@ public class UserServlet extends BaseServlet {
     }
 
     private User checkSelf(HttpServletRequest req, boolean addr) {
-        int  id = getId(req);
+        int  id = getUserId(req);
         User u  = (User) req.getSession().getAttribute("lguser");
         if (id == u.getId() || u.getRole() == Role.ADMIN) {
             User cu = udao.load(id, addr);
@@ -228,15 +230,6 @@ public class UserServlet extends BaseServlet {
         }
         return null;
 
-    }
-
-    private int getId(HttpServletRequest req) {
-        try {
-            int id = Integer.parseInt(req.getParameter("userid"));
-            return id;
-        } catch (NumberFormatException e) {
-            return -1;
-        }
     }
 
 }
