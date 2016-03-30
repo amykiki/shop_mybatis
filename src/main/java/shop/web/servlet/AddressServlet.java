@@ -1,5 +1,7 @@
 package shop.web.servlet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import shop.dao.AddressDao;
 import shop.dao.IAddressDao;
 import shop.dao.IUserDao;
@@ -22,7 +24,7 @@ import java.util.*;
  * Created by Amysue on 2016/3/29.
  */
 public class AddressServlet extends BaseServlet {
-
+    private static Logger logger = LogManager.getLogger(AddressServlet.class);
     private IAddressDao adao;
     private IUserDao    udao;
 

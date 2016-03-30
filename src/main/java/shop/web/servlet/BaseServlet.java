@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class BaseServlet extends HttpServlet {
     private final String redirectTo = "redirect:";
-    protected static Logger logger = LogManager.getLogger();
+    private static Logger logger = LogManager.getLogger(BaseServlet.class);
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

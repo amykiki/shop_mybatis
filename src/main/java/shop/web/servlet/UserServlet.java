@@ -1,5 +1,7 @@
 package shop.web.servlet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import shop.dao.IUserDao;
 import shop.model.Pager;
 import shop.model.Role;
@@ -21,6 +23,7 @@ import java.util.*;
  * Created by Amysue on 2016/3/23.
  */
 public class UserServlet extends BaseServlet {
+    private static Logger logger = LogManager.getLogger(UserServlet.class);
     private IUserDao udao;
     private int      pageLimit;
     private int      pageShow;
