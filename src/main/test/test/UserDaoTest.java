@@ -5,7 +5,7 @@ import shop.dao.DaoFactory;
 import shop.dao.IUserDao;
 import shop.model.Address;
 import shop.model.Pager;
-import shop.model.Role;
+import shop.enums.Role;
 import shop.model.User;
 import shop.util.ShopDi;
 
@@ -14,12 +14,8 @@ import java.util.*;
 /**
  * Created by Amysue on 2016/3/17.
  */
-public class UserDaoTest {
+public class UserDaoTest extends BaseTest{
     IUserDao udao;
-
-    public UserDaoTest() {
-        DaoFactory.setDao(this);
-    }
 
     @ShopDi("userDao")
     public void setUdao(IUserDao udao) {

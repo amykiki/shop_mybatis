@@ -11,7 +11,7 @@
         <typeAlias alias="Address" type="${address}"/>
     </typeAliases>
     <typeHandlers>
-        <typeHandler handler="shop.mybatis.handler.RoleHandler" javaType="shop.model.Role"/>
+        <typeHandler handler="shop.mybatis.handler.RoleHandler" javaType="shop.enums.Role"/>
     </typeHandlers>
     <environments default="development">
         <environment id="development">

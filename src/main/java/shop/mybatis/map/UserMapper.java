@@ -1,7 +1,7 @@
 package shop.mybatis.map;
 
 import org.apache.ibatis.annotations.Param;
-import shop.model.Role;
+import shop.enums.Role;
 import shop.model.User;
 
 import java.util.List;

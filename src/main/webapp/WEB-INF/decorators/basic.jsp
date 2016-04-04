@@ -1,4 +1,4 @@
-<%@ page import="shop.model.Role" %><%--
+<%@ page import="shop.enums.Role" %><%--
   Created by IntelliJ IDEA.
   User: Amysue
   Date: 2016/3/21

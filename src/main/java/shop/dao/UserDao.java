@@ -1,6 +1,6 @@
 package shop.dao;
 
-import shop.model.Role;
+import shop.enums.Role;
 import shop.model.User;
 import shop.mybatis.map.UserMapper;
 import shop.util.ShopException;

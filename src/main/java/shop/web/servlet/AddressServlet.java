@@ -2,12 +2,11 @@ package shop.web.servlet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import shop.dao.AddressDao;
 import shop.dao.IAddressDao;
 import shop.dao.IUserDao;
 import shop.model.Address;
-import shop.model.EqualID;
-import shop.model.Role;
+import shop.enums.EqualID;
+import shop.enums.Role;
 import shop.model.User;
 import shop.util.RequestUtil;
 import shop.util.ShopDi;
@@ -40,9 +39,9 @@ public class AddressServlet extends BaseServlet {
 
     @Auth(value = Role.NORMAL, equalID = EqualID.EQUAL)
     public String delete(HttpServletRequest req, HttpServletResponse resp) {
-        User          lguser  = (User) req.getSession().getAttribute("lguser");
-        int           id      = lguser.getId();
-        User          u       = null;
+        User lguser = (User) req.getSession().getAttribute("lguser");
+        int  id     = lguser.getId();
+        User u      = null;
         try {
             u = udao.load(id);
         } catch (ShopException e) {
@@ -72,11 +71,11 @@ public class AddressServlet extends BaseServlet {
     // TODO: 2016/3/29  添加地址
     @Auth(value = Role.NORMAL)
     public String addInput(HttpServletRequest req, HttpServletResponse resp) {
-        Address             addr    = (Address) RequestUtil.setFileds(Address.class, req, AddFiled.class);
+        Address             addr    = (Address) RequestUtil.setFileds(Address.class, req, AddFiled.class, "add");
         Map<String, String> errMap  = (Map<String, String>) req.getAttribute("errMap");
         User                lguser  = lgUser(req);
         boolean             addFail = false;
-        if (errMap.isEmpty()) {
+        if (errMap.isEmpty() && addr != null) {
             try {
                 adao.add(addr, lguser.getId());
             } catch (ShopException e) {
@@ -106,16 +105,16 @@ public class AddressServlet extends BaseServlet {
 
     @Auth(value = Role.NORMAL)
     public String updateInput(HttpServletRequest req, HttpServletResponse resp) {
-        int addrId = getId(req, "addrid");
-        User    lguser     = lgUser(req);
+        int     addrId  = getId(req, "addrid");
+        User    lguser  = lgUser(req);
         Address oldaddr = loadSelfAddr(req);
         if (oldaddr == null) {
             return "/WEB-INF/util/error.jsp";
         }
-        Address caddr = (Address) RequestUtil.setFileds(Address.class, req, UpdateFiled.class);
-        caddr.setId(oldaddr.getId());
+        Address             caddr  = (Address) RequestUtil.setFileds(Address.class, req, UpdateFiled.class, "update");
         Map<String, String> errMap = (Map<String, String>) req.getAttribute("errMap");
-        if (errMap.isEmpty()) {
+        if (errMap.isEmpty() && caddr != null) {
+            caddr.setId(oldaddr.getId());
             adao.update(caddr);
             return "/user.do?method=show&userid=" + lguser.getId();
         } else {
@@ -127,9 +126,9 @@ public class AddressServlet extends BaseServlet {
     }
 
     private Address loadSelfAddr(HttpServletRequest req) {
-        User    lguser     = lgUser(req);
-        int     addrId     = getId(req, "addrid");
-        Address addr = null;
+        User    lguser = lgUser(req);
+        int     addrId = getId(req, "addrid");
+        Address addr   = null;
         if (addrId == -1) {
             req.setAttribute("errMsg", "传入地址id不正确");
             logger.debug("传入地址id不正确");

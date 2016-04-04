@@ -1,4 +1,4 @@
-<%@ page import="shop.model.Role" %>
+<%@ page import="shop.enums.Role" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.HashMap" %>
 <%--Created by IntelliJ IDEA.

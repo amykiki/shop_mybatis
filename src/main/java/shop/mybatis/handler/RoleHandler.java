@@ -2,7 +2,7 @@ package shop.mybatis.handler;
 
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
-import shop.model.Role;
+import shop.enums.Role;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;

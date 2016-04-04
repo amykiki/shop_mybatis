@@ -4,12 +4,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import shop.dao.DaoFactory;
 import shop.dao.IUserDao;
-import shop.model.EqualID;
-import shop.model.Role;
+import shop.enums.EqualID;
+import shop.enums.Role;
 import shop.model.User;
 import shop.util.ShopException;
 import shop.web.annotation.Auth;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,13 @@ public class BaseServlet extends HttpServlet {
     private final String redirectTo = "redirect:";
     private static Logger logger = LogManager.getLogger(BaseServlet.class);
 
+    public BaseServlet() {
+        logger.debug(this.getClass().getName() + " is starting.....==============");
+        DaoFactory.setDao(this);
+        logger.debug(this.getClass().getName() + " complete dao injectiong=========");
+    }
+
+
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getSession().getAttribute("lguser") == null) {
@@ -35,7 +43,6 @@ public class BaseServlet extends HttpServlet {
             u.setRole(Role.ANON);
             req.getSession().setAttribute("lguser", u);
         }
-        DaoFactory.setDao(this);
         String methodName = req.getParameter("method");
         logger.debug(req.getRequestURL().append('?').append(getQuery(req)));
         try {

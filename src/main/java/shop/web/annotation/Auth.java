@@ -1,7 +1,7 @@
 package shop.web.annotation;
 
-import shop.model.EqualID;
-import shop.model.Role;
+import shop.enums.EqualID;
+import shop.enums.Role;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

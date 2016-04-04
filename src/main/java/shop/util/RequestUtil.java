@@ -20,14 +20,15 @@ import java.util.*;
 public class RequestUtil {
     private static Logger logger = LogManager.getLogger();
 
-    public static Object setFileds(Class<?> clz, HttpServletRequest req, Class annoClz) {
+    public static Object setFileds(Class<?> clz, HttpServletRequest req, Class annoClz, String action) {
         Map<String, String[]> paraMap  = req.getParameterMap();
         Set<String>           paraKeys = paraMap.keySet();
         Map<String, String>   errMap   = new HashMap<>();
 
         Field[] declarFileds = clz.getDeclaredFields();
         req.setAttribute("errMap", errMap);
-        Object bean = null;
+        Object  bean          = null;
+        boolean setProperties = false;
         try {
             bean = clz.newInstance();
         } catch (InstantiationException e) {
@@ -42,7 +43,7 @@ public class RequestUtil {
                 String[] paraValues = paraMap.get(annoKey);
                 if (paraValues == null) {
                     logger.debug(annoKey + " is not existed");
-                    if (declarFiled.isAnnotationPresent(NotNull.class)) {
+                    if (declarFiled.isAnnotationPresent(NotNull.class) && action.equals("add")) {
                         errMap.put(annoKey, annoKey + "属性是必须的");
                         logger.debug(annoKey + " is NULL");
                     }
@@ -64,6 +65,7 @@ public class RequestUtil {
                         }
                     }
                     BeanUtils.setProperty(bean, annoKey, paraValue);
+                    setProperties = true;
                 } catch (InvocationTargetException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
@@ -72,7 +74,11 @@ public class RequestUtil {
             }
         }
 
-        return bean;
+        if (setProperties) {
+            return bean;
+        } else {
+            return null;
+        }
 
     }
 
@@ -88,9 +94,10 @@ public class RequestUtil {
         }
         return true;
     }
+
     public static String validate(Field field, Object value) {
-        Annotation[]        annotations = field.getDeclaredAnnotations();
-        String              errMsg      = "";
+        Annotation[] annotations = field.getDeclaredAnnotations();
+        String       errMsg      = "";
         for (int i = 0; i < annotations.length; i++) {
             Annotation annotation = annotations[i];
             String     methodName = annotation.annotationType().getSimpleName();

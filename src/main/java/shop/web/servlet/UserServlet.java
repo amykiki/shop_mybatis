@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import shop.dao.IUserDao;
 import shop.model.Pager;
-import shop.model.Role;
+import shop.enums.Role;
 import shop.model.User;
 import shop.util.RequestUtil;
 import shop.util.ShopDi;
@@ -35,7 +35,7 @@ public class UserServlet extends BaseServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        System.out.println("This is UserServlet init");
+        logger.debug("This is UserServlet init");
         String limit = config.getInitParameter("pageLimit");
         pageLimit = Integer.parseInt(limit);
         pageShow = Integer.parseInt(config.getInitParameter("pageShow"));
@@ -77,10 +77,10 @@ public class UserServlet extends BaseServlet {
 
     @Auth(value = Role.ANON)
     public String addInput(HttpServletRequest req, HttpServletResponse resp) {
-        User                u       = (User) RequestUtil.setFileds(User.class, req, AddFiled.class);
+        User                u       = (User) RequestUtil.setFileds(User.class, req, AddFiled.class, "add");
         Map<String, String> errMap  = (Map<String, String>) req.getAttribute("errMap");
         boolean             addFail = false;
-        if (errMap.isEmpty()) {
+        if (errMap.isEmpty() && u != null) {
             try {
                 u.setRole(Role.NORMAL);
                 udao.add(u);
@@ -172,14 +172,11 @@ public class UserServlet extends BaseServlet {
             req.setAttribute("errMsg", "没有权限进行修改");
             return "/WEB-INF/util/error.jsp";
         }
-        User u = (User) RequestUtil.setFileds(User.class, req, UpdateFiled.class);
-        if (u == null) {
-            u = new User();
-        }
-        u.setId(cu.getId());
-        u.setUsername(cu.getUsername());
+        User u = (User) RequestUtil.setFileds(User.class, req, UpdateFiled.class, "update");
         Map<String, String> errMap = (Map<String, String>) req.getAttribute("errMap");
-        if (errMap.isEmpty()) {
+        if (errMap.isEmpty() && u != null) {
+            u.setId(cu.getId());
+            u.setUsername(cu.getUsername());
             udao.update(u);
         } else {
             logger.debug("对象转换失败");

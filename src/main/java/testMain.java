@@ -1,12 +1,11 @@
 import shop.model.Address;
-import shop.model.Role;
+import shop.enums.Role;
 import shop.model.User;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 
 /**
  * Created by Amysue on 2016/3/16.

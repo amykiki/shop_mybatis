@@ -1,7 +1,7 @@
 package shop.dao;
 
 import shop.model.Pager;
-import shop.model.Role;
+import shop.enums.Role;
 import shop.model.User;
 import shop.util.ShopException;
 

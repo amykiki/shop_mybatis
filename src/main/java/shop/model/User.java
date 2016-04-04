@@ -1,5 +1,6 @@
 package shop.model;
 
+import shop.enums.Role;
 import shop.web.annotation.AddFiled;
 import shop.web.annotation.CheckEmpty;
 import shop.web.annotation.NotNull;

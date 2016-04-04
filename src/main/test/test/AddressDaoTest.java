@@ -11,13 +11,8 @@ import java.util.List;
 /**
  * Created by Amysue on 2016/3/18.
  */
-public class AddressDaoTest {
+public class AddressDaoTest extends BaseTest{
     IAddressDao adao;
-
-    public AddressDaoTest() {
-        System.out.println("=========Address Dao Test Begin===========");
-        DaoFactory.setDao(this);
-    }
 
     @ShopDi("addressDao")
     public void setAdao(IAddressDao adao) {
