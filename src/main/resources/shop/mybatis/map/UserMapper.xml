@@ -55,7 +55,7 @@
     </delete>
 
     <update id="update" parameterType="User">
-        UPDATE t_user
+        update t_user
         <set>
             <if test="password != null">password=#{password},</if>
             <if test="nickname != null">nickname=#{nickname},</if>

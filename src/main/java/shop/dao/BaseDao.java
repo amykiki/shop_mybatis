@@ -234,4 +234,20 @@ public class BaseDao<T> {
         }
         return obj;
     }
+
+    public Object runSelectMethod(String mName, Object[] params, Class<?>[] pClz) throws Exception{
+        SqlSession session = null;
+        Object obj= null;
+        try {
+            session = BatisUtil.getSession();
+            Object mapper = session.getMapper(clz);
+            Method m = mapper.getClass().getDeclaredMethod(mName, pClz);
+            obj=  m.invoke(mapper, params);
+        } catch (Exception e) {
+            throw new Exception(e);
+        } finally {
+            BatisUtil.closeSession(session);
+        }
+        return obj;
+    }
 }

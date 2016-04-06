@@ -9,6 +9,7 @@
     <typeAliases>
         <typeAlias alias="User" type="${user}"/>
         <typeAlias alias="Address" type="${address}"/>
+        <typeAlias alias="Category" type="${category}"/>
     </typeAliases>
     <typeHandlers>
         <typeHandler handler="shop.mybatis.handler.RoleHandler" javaType="shop.enums.Role"/>
@@ -27,5 +28,6 @@
     <mappers>
         <mapper class="shop.mybatis.map.UserMapper"/>
         <mapper class="shop.mybatis.map.AddressMapper"/>
+        <mapper class="shop.mybatis.map.CategoryMapper"/>
     </mappers>
 </configuration>

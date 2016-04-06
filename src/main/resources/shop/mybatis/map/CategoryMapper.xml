@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="shop.mybatis.map.CategoryMapper">
+    <select id="selectByPro" resultType="Category" parameterType="string"
+            statementType="CALLABLE">
+    {call addNestNode(#{name, jdbcType=VARCHAR, mode=IN})}
+</select>
+
+    <insert id="addFriendNode" parameterType="map" statementType="CALLABLE">
+        {call addFriendNode(#{friendCategory.name, jdbcType=VARCHAR, mode=IN}, #{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
+    </insert>
+
+    <insert id="addChildNode" parameterType="map" statementType="CALLABLE">
+        {call addChildNode(#{parentCategory.name, jdbcType=VARCHAR, mode=IN}, #{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
+    </insert>
+
+</mapper>
