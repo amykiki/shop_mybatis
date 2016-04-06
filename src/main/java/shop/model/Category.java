@@ -17,16 +17,8 @@ public class Category {
     private String name;
 
     private Category parentCategory;
-
-    public Category getParentCategory() {
-        return parentCategory;
-    }
-
-    public void setParentCategory(Category parentCategory) {
-        this.parentCategory = parentCategory;
-    }
-
-    private List<Category> childCategories;
+//    分类的深度
+    private int depth;
 
     public int getId() {
         return id;
@@ -44,20 +36,35 @@ public class Category {
         this.name = name;
     }
 
-    public List<Category> getChildCategories() {
-        return childCategories;
+    public Category getParentCategory() {
+        return parentCategory;
     }
 
-    public void setChildCategories(List<Category> childCategories) {
-        this.childCategories = childCategories;
+    public void setParentCategory(Category parentCategory) {
+        this.parentCategory = parentCategory;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
     @Override
     public String toString() {
-        return "Category{" +
+        String str =  "Category{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", parentCategory.id=" + parentCategory.getId() +
-                '}';
+                ", name='" + name;
+        if (this.getParentCategory() != null) {
+            str +=  ", parentCategory.id=" + parentCategory.getId() +
+                    ", parentCategory.name=" + parentCategory.getName();
+        }
+        if (this.getDepth() > 0) {
+            str += ", depth = " + depth;
+        }
+        str += "}";
+        return str;
     }
 }

@@ -23,7 +23,7 @@ public class BaseDao<T> {
         this.clz = clz;
     }
 
-    public T load(int id) throws ShopException{
+    public T load(int id) throws ShopException {
         T          obj     = null;
         SqlSession session = null;
         try {
@@ -83,7 +83,7 @@ public class BaseDao<T> {
         return keyID;
     }
 
-    public int delete(int id) throws ShopException{
+    public int delete(int id) throws ShopException {
         SqlSession session      = null;
         int        affectedRows = 0;
         try {
@@ -109,7 +109,7 @@ public class BaseDao<T> {
         int        affectedRows = 0;
         try {
             session = BatisUtil.getSession();
-            Object mapper = session.getMapper(clz);
+            Object mapper      = session.getMapper(clz);
             Method deleteLists = mapper.getClass().getDeclaredMethod("deleteLists", List.class);
             affectedRows = (int) deleteLists.invoke(mapper, list);
             session.commit();
@@ -158,7 +158,7 @@ public class BaseDao<T> {
     }
 
     public Pager<T> find(Map<String, Object> params) {
-        SqlSession session = null;
+        SqlSession session     = null;
         List<T>    lists       = null;
         Pager<T>   pager       = new Pager<>();
         int        allItems    = 0;
@@ -217,14 +217,14 @@ public class BaseDao<T> {
         return pager;
     }
 
-    public Object runMethod(String mName, Object[] params, Class<?>[] pClz) throws Exception{
+    public Object runMethod(String mName, Object[] params, Class<?>[] pClz) throws Exception {
         SqlSession session = null;
-        Object obj= null;
+        Object     obj     = null;
         try {
             session = BatisUtil.getSession();
             Object mapper = session.getMapper(clz);
-            Method m = mapper.getClass().getDeclaredMethod(mName, pClz);
-            obj=  m.invoke(mapper, params);
+            Method m      = mapper.getClass().getDeclaredMethod(mName, pClz);
+            obj = m.invoke(mapper, params);
             session.commit();
         } catch (Exception e) {
             session.rollback();
@@ -235,14 +235,20 @@ public class BaseDao<T> {
         return obj;
     }
 
-    public Object runSelectMethod(String mName, Object[] params, Class<?>[] pClz) throws Exception{
+    public Object runSelectMethod(String mName, Object[] params, Class<?>[] pClz) throws Exception {
         SqlSession session = null;
-        Object obj= null;
+        Object     obj     = null;
         try {
             session = BatisUtil.getSession();
             Object mapper = session.getMapper(clz);
-            Method m = mapper.getClass().getDeclaredMethod(mName, pClz);
-            obj=  m.invoke(mapper, params);
+            Method m      = null;
+            if (pClz == null) {
+                m = mapper.getClass().getDeclaredMethod(mName);
+
+            } else {
+                m = mapper.getClass().getDeclaredMethod(mName, pClz);
+            }
+            obj = m.invoke(mapper, params);
         } catch (Exception e) {
             throw new Exception(e);
         } finally {

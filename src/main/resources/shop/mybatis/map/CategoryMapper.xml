@@ -9,11 +9,90 @@
 </select>
 
     <insert id="addFriendNode" parameterType="map" statementType="CALLABLE">
-        {call addFriendNode(#{friendCategory.name, jdbcType=VARCHAR, mode=IN}, #{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
+        {call addFriendNode(#{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{friendCategory.id, jdbcType=INTEGER, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
     </insert>
 
     <insert id="addChildNode" parameterType="map" statementType="CALLABLE">
-        {call addChildNode(#{parentCategory.name, jdbcType=VARCHAR, mode=IN}, #{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
+        {call addChildNode(#{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{parentCategory.id, jdbcType=INTEGER, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
     </insert>
+
+    <insert id="addParentNode" parameterType="map" statementType="CALLABLE">
+        {call addParentNode(#{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{childCategoryLeft.id, jdbcType=INTEGER, mode=IN}, #{childCategoryRight.id, jdbcType=INTEGER, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
+    </insert>
+
+    <insert id="delete" parameterType="int" statementType="CALLABLE">
+        {call deleteNode(#{id, mode=IN, jdbcType=INTEGER})}
+    </insert>
+
+    <update id="update" parameterType="Category">
+        UPDATE t_category SET name = #{name} WHERE id = #{id}
+    </update>
+
+    <resultMap id="categorymap" type="Category">
+        <id column="node_id" property="id"/>
+        <result column="node_name" property="name"/>
+        <association property="parentCategory" javaType="Category">
+            <id column="parent_id" property="id"/>
+            <result column="parent_name" property="name"/>
+        </association>
+    </resultMap>
+    <select id="load" parameterType="int" resultMap="categorymap">
+        SELECT
+          node.id AS node_id,
+          node.name AS node_name,
+          parent.id AS parent_id,
+          parent.name AS parent_name
+        FROM t_category AS node
+        INNER JOIN t_category AS parent
+        ON node.parent_id = parent.id
+        WHERE node.id = #{id}
+    </select>
+
+    <select id="loadByName" parameterType="string" resultMap="categorymap">
+        SELECT
+        node.id AS node_id,
+        node.name AS node_name,
+        parent.id AS parent_id,
+        parent.name AS parent_name
+        FROM t_category AS node
+        INNER JOIN t_category AS parent
+        ON node.parent_id = parent.id
+        WHERE node.name = #{name}
+    </select>
+
+    <resultMap id="categorylist" type="Category">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="depth" property="depth"/>
+        <association property="parentCategory" javaType="Category">
+            <id column="parent_id" property="id"/>
+        </association>
+    </resultMap>
+    <select id="loadLists" resultMap="categorylist">
+        SELECT node.name,
+               (COUNT(parent.`name`) - 1) AS depth,
+               node.id,
+               node.parent_id
+        FROM t_category AS node
+        INNER JOIN t_category AS parent
+        on node.lft BETWEEN parent.lft and parent.rgt
+        WHERE parent.id != 1
+        GROUP BY node.name
+        ORDER BY node.lft
+    </select>
+
+
+    <select id="loadNodes" parameterType="int" resultMap="categorymap">
+        SELECT
+          node.id AS node_id,
+          node.name AS node_name,
+          parent.id AS parent_id,
+          parent.name AS parent_name
+        FROM t_category AS node
+        INNER JOIN t_category AS parent
+        ON node.parent_id = parent.id
+        WHERE parent.id = #{parentid}
+    </select>
+
 
 </mapper>

@@ -35,3 +35,38 @@ INSERT INTO t_address VALUES (NULL, 'harry', '女贞路999号', '582469', '20000
 SELECT *, t1.id as addr_id FROM t_address t1 LEFT JOIN t_user t2 ON t1.user_id = t2.id WHERE t1.id = 1;
 SELECT *, t1.id as t_user_id, t2.id as t_addr_id FROM t_user t1 LEFT JOIN t_address t2 ON t1.id = t2.user_id GROUP BY t1.id;
 
+SHOW TABLES;
+DESC t_category;
+
+
+SELECT
+  node.id     AS node_id,
+  node.name   AS node_name,
+  parent.id   AS parent_id,
+  parent.name AS parent_name
+FROM t_category AS node
+  INNER JOIN t_category AS parent on node.parent_id = parent.id
+WHERE parent.id = -1;
+
+SELECT
+  node.id     AS node_id,
+  node.name   AS node_name,
+  parent.id   AS parent_id,
+  parent.name AS parent_name
+FROM t_category AS node
+  INNER JOIN t_category AS parent on node.parent_id = parent.id
+WHERE node.id = 2;
+
+SELECT CONCAT( REPEAT('   ', COUNT(parent.`name`) - 1), node.name) AS `node_name`,
+  node.name,
+       (COUNT(parent.`name`) - 1) AS depth,
+  node.id, node.parent_id
+FROM t_category AS node
+  INNER JOIN t_category AS parent
+    on node.lft BETWEEN parent.lft and parent.rgt
+WHERE parent.id != 1
+GROUP BY node.name
+ORDER BY node.lft;
+
+
+
