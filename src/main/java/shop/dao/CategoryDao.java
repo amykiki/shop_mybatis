@@ -117,7 +117,7 @@ public class CategoryDao extends BaseDao<Category> {
     }
 
     private int printCategory(Category c, int lastDepth) {
-        String name = c.getName() + "-" + c.getId() + "-" + c.getParentCategory().getId();
+        String name = c.getName() + "-" + c.getId() + "-" + c.getParentCategory().getId() + "-" + c.getParentCategory().getName();
         if (c.getDepth() == 0) {
             if (lastDepth > 0) {
                 System.out.println();

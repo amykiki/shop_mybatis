@@ -10,9 +10,11 @@
         <typeAlias alias="User" type="${user}"/>
         <typeAlias alias="Address" type="${address}"/>
         <typeAlias alias="Category" type="${category}"/>
+        <typeAlias alias="Product" type="${product}"/>
     </typeAliases>
     <typeHandlers>
         <typeHandler handler="shop.mybatis.handler.RoleHandler" javaType="shop.enums.Role"/>
+        <typeHandler handler="shop.mybatis.handler.PStatusHandler" javaType="shop.enums.PStatus"/>
     </typeHandlers>
     <environments default="development">
         <environment id="development">
@@ -29,5 +31,6 @@
         <mapper class="shop.mybatis.map.UserMapper"/>
         <mapper class="shop.mybatis.map.AddressMapper"/>
         <mapper class="shop.mybatis.map.CategoryMapper"/>
+        <mapper class="shop.mybatis.map.ProductMapper"/>
     </mappers>
 </configuration>

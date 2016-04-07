@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="shop.mybatis.map.ProductMapper">
+    <insert id="add" parameterType="Product" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO t_product
+        VALUES (NULL,#{name}, #{price}, #{intro}, #{img}, #{stock}, #{status}, #{sales}, #{category.id})
+    </insert>
+    <update id="update" parameterType="Product">
+        UPDATE t_product
+        <set>
+            <if test="name != null">name=#{name},</if>
+            <if test="price != null">price=#{price},</if>
+            <if test="intro != null">intro=#{intro},</if>
+            <if test="img != null">img=#{img},</if>
+            <if test="stock != null">stock=#{stock},</if>
+            <if test="status != null">status=#{status},</if>
+            <if test="sales != null">sales=#{sales},</if>
+            <if test="category != null">c_id=#{category.id}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <resultMap id="productMap" type="Product" autoMapping="true">
+        <id column="p_id" property="id"/>
+        <result column="p_name" property="name"/>
+        <association property="category" javaType="Category">
+            <id column="c_id" property="id"/>
+            <result column="c_name" property="name"/>
+        </association>
+    </resultMap>
+    <select id="load" parameterType="int" resultMap="productMap">
+        SELECT *, p.id AS p_id, p.name as p_name, c.name as c_name
+        FROM t_product AS p
+        LEFT JOIN t_category AS c
+        ON p.c_id = c.id
+        WHERE p.id = #{id};
+    </select>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM t_product WHERE id = #{id}
+    </delete>
+
+    <update id="setPrice" parameterType="map">
+        UPDATE t_product SET price = #{price} WHERE id = #{id}
+    </update>
+
+    <update id="setStock" parameterType="Product">
+        UPDATE t_product SET stock = #{stock} WHERE id = #{id}
+    </update>
+
+    <update id="setSales" parameterType="Product">
+        UPDATE t_product SET sales = #{sales} WHERE id = #{id}
+    </update>
+
+    <update id="setStatus" parameterType="Product">
+        UPDATE t_product SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <sql id="findWhere">
+        <where>
+            <if test="name != null and _parameter.get(name) != ''">
+                p.name LIKE concat('%', #{name}, '%')
+            </if>
+            <if test="price1 != null and price2 != null">
+                AND price BETWEEN #{price1} AND #{price2}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="cid != null">
+                AND c_id IN (SELECT node.id FROM t_category AS node
+                INNER JOIN t_category AS parent
+                ON node.lft BETWEEN parent.lft AND parent.rgt
+                WHERE parent.id = #{cid})
+            </if>
+        </where>
+    </sql>
+    <select id="find" parameterType="map" resultMap="productMap">
+        SELECT p.id AS p_id, p.name AS p_name, p.price, p.img, p.stock, p.status,
+        p.sales,c.id AS c_id, c.name AS c_name
+        FROM t_product p
+        LEFT JOIN t_category c ON p.c_id = c.id
+        <include refid="findWhere"/>
+        <if test="sort != null">
+            ORDER BY ${sort}
+            <if test="order != null">
+                /*升序或者降序，默认为升序asc*/
+                ${order}
+            </if>
+        </if>
+        limit #{offset}, #{pageLimit}
+    </select>
+
+    <select id="findCount" parameterType="map" resultType="int">
+        SELECT count(*) FROM t_product AS p
+        <include refid="findWhere"/>
+    </select>
+
+
+</mapper>

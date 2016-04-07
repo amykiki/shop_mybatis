@@ -3,10 +3,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="shop.mybatis.map.CategoryMapper">
-    <select id="selectByPro" resultType="Category" parameterType="string"
-            statementType="CALLABLE">
-    {call addNestNode(#{name, jdbcType=VARCHAR, mode=IN})}
-</select>
 
     <insert id="addFriendNode" parameterType="map" statementType="CALLABLE">
         {call addFriendNode(#{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{friendCategory.id, jdbcType=INTEGER, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
@@ -66,13 +62,15 @@
         <result column="depth" property="depth"/>
         <association property="parentCategory" javaType="Category">
             <id column="parent_id" property="id"/>
+            <result column="p_name" property="name"/>
         </association>
     </resultMap>
     <select id="loadLists" resultMap="categorylist">
         SELECT node.name,
                (COUNT(parent.`name`) - 1) AS depth,
                node.id,
-               node.parent_id
+               node.parent_id,
+               (SELECT name FROM t_category WHERE id = node.parent_id) AS p_name
         FROM t_category AS node
         INNER JOIN t_category AS parent
         on node.lft BETWEEN parent.lft and parent.rgt

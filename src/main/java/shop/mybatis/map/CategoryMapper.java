@@ -10,7 +10,6 @@ import java.util.Map;
  * Created by Amysue on 2016/4/5.
  */
 public interface CategoryMapper {
-    public Category selectByPro(String name);
 
 //    public void addFriendNode(@Param("friendCategory") Category c1, @Param("newCategory") Category c2, @Param("id") Integer id);
     public void addFriendNode(Map<String, Object> map);

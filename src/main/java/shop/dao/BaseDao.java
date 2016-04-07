@@ -1,6 +1,8 @@
 package shop.dao;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import shop.model.Pager;
 import shop.util.BatisUtil;
 import shop.util.ShopException;
@@ -16,11 +18,13 @@ import java.util.Map;
  */
 public class BaseDao<T> {
     private Class clz;
+    protected Logger logger;
 
     public BaseDao(Class clz) {
 //        System.out.println("=========Add " + this.getClass().getName() + " Begin===========");
 //        DaoFactory.setDao(this);
         this.clz = clz;
+        logger = LogManager.getLogger(this);
     }
 
     public T load(int id) throws ShopException {
@@ -164,6 +168,7 @@ public class BaseDao<T> {
         int        allItems    = 0;
         int        pageLimit   = (int) params.get("pageLimit");
         int        toPage      = (int) params.get("toPage");
+//        翻页按钮显示个数
         int        pageShow    = (int) params.get("pageShow");
         int        allPageNums = 0;
         int        begin       = 0;
