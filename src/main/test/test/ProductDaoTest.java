@@ -9,9 +9,7 @@ import shop.model.Pager;
 import shop.model.Product;
 import shop.util.ShopDi;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -139,9 +137,11 @@ public class ProductDaoTest extends BaseTest {
         params.put("pageShow", 10);
 //        params.put("name", "");
 //        params.put("status", PStatus.OffSale);
-        params.put("price1", 0);
-        params.put("price2", 800);
-        params.put("cid", 19);
+//        params.put("price1", 0);
+//        params.put("price2", 800);
+        Integer[] data = new Integer[]{6,24};
+        List<Integer> list = Arrays.<Integer>asList(data);
+        params.put("cids", list);
         params.put("sort", "price");
         params.put("order", "desc");
         Pager<Product> pager = pDao.find(params);

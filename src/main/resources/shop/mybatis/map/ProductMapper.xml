@@ -57,6 +57,11 @@
         UPDATE t_product SET status = #{status} WHERE id = #{id}
     </update>
 
+    <sql id="inList">
+        <foreach collection="cids" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </sql>
     <sql id="findWhere">
         <where>
             <if test="name != null and _parameter.get(name) != ''">
@@ -68,11 +73,11 @@
             <if test="status != null">
                 AND status = #{status}
             </if>
-            <if test="cid != null">
-                AND c_id IN (SELECT node.id FROM t_category AS node
+            <if test="cids != null">
+                AND c_id IN (SELECT DISTINCT node.id FROM t_category AS node
                 INNER JOIN t_category AS parent
                 ON node.lft BETWEEN parent.lft AND parent.rgt
-                WHERE parent.id = #{cid})
+                WHERE parent.id IN <include refid="inList"/>)
             </if>
         </where>
     </sql>

@@ -41,6 +41,7 @@
                     <c:choose>
                         <c:when test="${lguser.role == ADMIN}">
                             <li><a href="<%=request.getContextPath()%>/user.do?method=list">用户列表</a></li>
+                            <li><a href="<%=request.getContextPath()%>/product.do?method=add">添加商品</a></li>
                         </c:when>
                         <c:otherwise>
                             <li><a href="<%=request.getContextPath()%>/user.do?method=updateUser&userid=${lguser.id}">用户编辑</a></li>
@@ -49,6 +50,7 @@
             </c:when>
         </c:choose>
         <li><a href="<%=request.getContextPath()%>/category.do?method=list">商品分类</a></li>
+        <li><a href="<%=request.getContextPath()%>/product.do?method=list">商品列表</a></li>
     </ul>
     <hr/>
 </div>

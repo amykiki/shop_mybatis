@@ -56,6 +56,16 @@ public class ProductDao extends BaseDao<Product> implements IProductDao{
     public int setStatus(int id, PStatus status) {
         return setMethod(id, status, PStatus.class, "setStatus");
     }
+    @Override
+    public int setInSale(int id) {
+        PStatus ps = PStatus.InSale;
+        return setMethod(id, ps, PStatus.class, "setStatus");
+    }
+    @Override
+    public int setOffSale(int id) {
+        PStatus ps = PStatus.OffSale;
+        return setMethod(id, ps, PStatus.class, "setStatus");
+    }
 
     private int setMethod(int id, Object o, Class clz, String method) {
         Object[]   params = new Object[]{id, o};

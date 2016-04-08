@@ -84,3 +84,5 @@ WHERE c_id in
 
 
 SELECT p.id AS p_id, p.name AS p_name, p.price, p.img, p.stock, p.status, p.sales,c.id AS c_id, c.name AS c_name FROM t_product p LEFT JOIN t_category c ON p.c_id = c.id WHERE price BETWEEN 0 AND 800 ORDER BY price;
+
+SELECT DISTINCT node.id FROM t_category AS node INNER JOIN t_category AS parent ON node.lft BETWEEN parent.lft AND parent.rgt WHERE parent.id IN ( 6 ,24 );

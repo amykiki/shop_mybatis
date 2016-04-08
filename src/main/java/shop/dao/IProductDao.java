@@ -21,6 +21,8 @@ public interface IProductDao {
     public int setStock(int id, int stock);
     public int setSales(int id, int sales);
     public int setStatus(int id, PStatus status);
+    public int setInSale(int id);
+    public int setOffSale(int id);
 
     public int addStock(int id, int addStock);
 

@@ -76,4 +76,21 @@
         <servlet-name>CategoryServlet</servlet-name>
         <url-pattern>/category.do</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ProductServlet</servlet-name>
+        <servlet-class>shop.web.servlet.ProductServlet</servlet-class>
+        <init-param>
+            <param-name>pageLimit</param-name>
+            <param-value>15</param-value>
+        </init-param>
+        <init-param>
+            <param-name>pageShow</param-name>
+            <param-value>10</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductServlet</servlet-name>
+        <url-pattern>/product.do</url-pattern>
+    </servlet-mapping>
 </web-app>
