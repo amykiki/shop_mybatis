@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Created by Amysue on 2016/4/5.
  */
-public class CategoryDao extends BaseDao<Category> {
+public class CategoryDao extends BaseDao<Category> implements ICategoryDao{
     public CategoryDao() {
         super(CategoryMapper.class);
     }
@@ -26,28 +26,39 @@ public class CategoryDao extends BaseDao<Category> {
         return null;
     }
 
+    @Override
     public int addFriend(Category newCategory, Category friendCategory) throws ShopException {
         int id = addNode("friend", newCategory, friendCategory);
         return id;
     }
 
+    @Override
     public int addChild(Category newCategory, Category parentCategory) throws ShopException {
         int id = addNode("child", newCategory, parentCategory);
         return id;
     }
 
+    @Override
     public int addParent(Category newCategory, Category childCategoryLeft, Category childCategoryRight) throws ShopException {
         int id = addNode("parent", newCategory, childCategoryLeft, childCategoryRight);
         return id;
     }
 
-    private int addNode(String type, Category newCategory, Category... cs) throws ShopException {
+    @Override
+    public int addNode(String type, Category newCategory, Category... cs) throws ShopException {
         String categoryKey = "";
         String method      = "";
+        Category c = null;
 
-        if (loadByName(newCategory.getName()) != null) {
-            throw new ShopException(newCategory.getName() + " has been added, can't be add again");
+        try {
+            c = loadByName(newCategory.getName());
+        } catch (ShopException e) {
         }
+        if (c != null) {
+            logger.debug(newCategory.getName() + "分类已经存在");
+            throw new ShopException(newCategory.getName() + "分类已经存在");
+        }
+
         if (type.equals("friend")) {
             categoryKey = "friendCategory";
             method = "addFriendNode";
@@ -81,7 +92,7 @@ public class CategoryDao extends BaseDao<Category> {
     }
 
     @Override
-    public Category loadByName(String name) {
+    public Category loadByName(String name) throws ShopException{
         return super.loadByName(name);
     }
 
@@ -95,6 +106,7 @@ public class CategoryDao extends BaseDao<Category> {
         return super.update(obj);
     }
 
+    @Override
     public List<Category> loadNodes(int parentid) {
         Object[]   params = new Object[]{parentid};
         Class<?>[] pClz   = new Class[]{int.class};

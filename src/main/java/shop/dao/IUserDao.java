@@ -23,7 +23,7 @@ public interface IUserDao {
 
     public List<User> loadLists();
 
-    public User loadByName(String name);
+    public User loadByName(String name) throws ShopException;
 
     public Pager<User> find(Map<String, Object> params);
 

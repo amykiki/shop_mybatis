@@ -23,7 +23,6 @@ import java.util.*;
  * Created by Amysue on 2016/3/23.
  */
 public class UserServlet extends BaseServlet {
-    private static Logger logger = LogManager.getLogger(UserServlet.class);
     private IUserDao udao;
     private int      pageLimit;
     private int      pageShow;
@@ -48,7 +47,8 @@ public class UserServlet extends BaseServlet {
         }
         String              username = req.getParameter("username");
         String              password = req.getParameter("password");
-        Map<String, String> errMap   = new HashMap<>();
+        Map<String, String> errMap   = getErrMap();
+
         try {
             User u = udao.login(username, password);
             req.getSession().setAttribute("lguser", u);
@@ -59,10 +59,9 @@ public class UserServlet extends BaseServlet {
             } else {
                 errMap.put("username", e.getMessage());
             }
-            req.setAttribute("errMap", errMap);
             return "/WEB-INF/user/login.jsp";
         }
-        return getRedirectTo() + "/user.do?method=list";
+        return getRedirectTo() + "/category.do?method=list";
 
     }
 
@@ -78,7 +77,7 @@ public class UserServlet extends BaseServlet {
     @Auth(value = Role.ANON)
     public String addInput(HttpServletRequest req, HttpServletResponse resp) {
         User                u       = (User) RequestUtil.setFileds(User.class, req, AddFiled.class, "add");
-        Map<String, String> errMap  = (Map<String, String>) req.getAttribute("errMap");
+        Map<String, String> errMap  = getErrMap();
         boolean             addFail = false;
         if (errMap.isEmpty() && u != null) {
             try {
@@ -173,7 +172,7 @@ public class UserServlet extends BaseServlet {
             return "/WEB-INF/util/error.jsp";
         }
         User u = (User) RequestUtil.setFileds(User.class, req, UpdateFiled.class, "update");
-        Map<String, String> errMap = (Map<String, String>) req.getAttribute("errMap");
+        Map<String, String> errMap = getErrMap();
         if (errMap.isEmpty() && u != null) {
             u.setId(cu.getId());
             u.setUsername(cu.getUsername());

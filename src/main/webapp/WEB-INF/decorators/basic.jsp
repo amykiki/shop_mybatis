@@ -35,20 +35,21 @@
             </c:otherwise>
         </c:choose>
     </div>
-    <c:choose>
-        <c:when test="${not empty lguser.username}">
-            <ul>
-                <c:choose>
-                    <c:when test="${lguser.role == ADMIN}">
-                        <li><a href="<%=request.getContextPath()%>/user.do?method=list">用户列表</a></li>
-                    </c:when>
-                    <c:otherwise>
-                        <li><a href="<%=request.getContextPath()%>/user.do?method=updateUser&userid=${lguser.id}">用户编辑</a></li>
-                    </c:otherwise>
-                </c:choose>
-            </ul>
-        </c:when>
-    </c:choose>
+    <ul>
+        <c:choose>
+            <c:when test="${not empty lguser.username}">
+                    <c:choose>
+                        <c:when test="${lguser.role == ADMIN}">
+                            <li><a href="<%=request.getContextPath()%>/user.do?method=list">用户列表</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li><a href="<%=request.getContextPath()%>/user.do?method=updateUser&userid=${lguser.id}">用户编辑</a></li>
+                        </c:otherwise>
+                    </c:choose>
+            </c:when>
+        </c:choose>
+        <li><a href="<%=request.getContextPath()%>/category.do?method=list">商品分类</a></li>
+    </ul>
     <hr/>
 </div>
 <decorator:body/>

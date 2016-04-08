@@ -27,29 +27,25 @@ public class CategoryDaoTest extends BaseTest {
     @Test
     public void testAddFriend() throws Exception {
         Category c1 = new Category();
-        c1.setName("时尚女装");
-        c1.setParentCategory(new Category());
-        c1.getParentCategory().setId(-1);
+        c1.setName("精华");
         Category c2 = new Category();
-        c2.setName("运动户外");
-        c2.setParentCategory(c1.getParentCategory());
-        int id = cDao.addFriend(c1, c2);
-        c2.setId(id);
-        System.out.println(c2);
+        c2.setName("面霜");
+        int id = cDao.addFriend(c2, c1);
+        System.out.println(cDao.load(id));
     }
 
     @Test
     public void testAddChild() throws Exception {
         Category c1 = new Category();
-        c1.setName("面部护肤");
-        c1.setId(6);
+        c1.setName("洗发护发");
+//        c1.setId(6);
         Category c2 = new Category();
-        c2.setName("洁面");
-        c2.setParentCategory(c1.getParentCategory());
-        int id = cDao.addChild(c1, c2);
-        c2.setId(id);
-        c2.setParentCategory(c1);
-        System.out.println(c2);
+        c2.setName("洗发水");
+//        c2.setParentCategory(c1.getParentCategory());
+        int id = cDao.addChild(c2, c1);
+        /*c2.setId(id);
+        c2.setParentCategory(c1);*/
+        System.out.println(cDao.load(id));
     }
 
     @Test
@@ -106,8 +102,8 @@ public class CategoryDaoTest extends BaseTest {
     @Test
     public void testUpdate() throws Exception {
         Category c = new Category();
-        c.setId(4);
-        c.setName("个人护理");
+        c.setId(26);
+        c.setName("洁面");
         cDao.update(c);
     }
 

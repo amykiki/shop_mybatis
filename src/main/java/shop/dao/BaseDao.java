@@ -46,7 +46,7 @@ public class BaseDao<T> {
         return obj;
     }
 
-    public T loadByName(String name) {
+    public T loadByName(String name) throws ShopException{
         T          obj     = null;
         SqlSession session = null;
         try {
@@ -58,6 +58,10 @@ public class BaseDao<T> {
             throw new RuntimeException("Load " + clz.getSimpleName() + " Failed", e);
         } finally {
             BatisUtil.closeSession(session);
+        }
+        if (obj == null) {
+            logger.debug("method LoadByName Failed");
+            throw new ShopException("method LoadByName Failed");
         }
         return obj;
     }
@@ -233,6 +237,7 @@ public class BaseDao<T> {
             session.commit();
         } catch (Exception e) {
             session.rollback();
+            logger.debug(e.getMessage());
             throw new Exception(e);
         } finally {
             BatisUtil.closeSession(session);

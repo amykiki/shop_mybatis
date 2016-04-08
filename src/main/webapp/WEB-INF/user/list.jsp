@@ -88,7 +88,6 @@ To change this template use File | Settings | File Templates.--%>
                        value="${cuser['nickname']}"/>
             </div>
             <div class="last-radio-div radio-div">
-                <label for="radio1">所有用户:</label>
                 <c:choose>
                     <c:when test="${empty cuser.role}">
                         <input type="radio" name="role" id="radio1" value="All"
@@ -98,8 +97,8 @@ To change this template use File | Settings | File Templates.--%>
                         <input type="radio" name="role" id="radio1" value="All">
                     </c:otherwise>
                 </c:choose>
+                <label for="radio1">所有用户</label>
                 <c:forEach items="${rolemap}" var="item">
-                    <label for="radio-${item.key}">${item.value}:</label>
                     <c:choose>
                         <c:when test="${item.key == cuser.role}">
                             <input type="radio" name="role" id="radio-${item.key}"
@@ -110,6 +109,7 @@ To change this template use File | Settings | File Templates.--%>
                                    value="${item.key}">
                         </c:otherwise>
                     </c:choose>
+                    <label for="radio-${item.key}">${item.value}</label>
                 </c:forEach>
             </div>
             <div class="button">

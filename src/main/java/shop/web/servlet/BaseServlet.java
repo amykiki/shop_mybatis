@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +28,11 @@ import java.util.Map;
  */
 public class BaseServlet extends HttpServlet {
     private final String redirectTo = "redirect:";
-    private static Logger logger = LogManager.getLogger(BaseServlet.class);
+    private Map<String, String> errMap = new HashMap<>();
+    protected Logger logger;
 
     public BaseServlet() {
+        logger = LogManager.getLogger(this);
         logger.debug(this.getClass().getName() + " is starting.....==============");
         DaoFactory.setDao(this);
         logger.debug(this.getClass().getName() + " complete dao injectiong=========");
@@ -46,6 +49,8 @@ public class BaseServlet extends HttpServlet {
         String methodName = req.getParameter("method");
         logger.debug(req.getRequestURL().append('?').append(getQuery(req)));
         try {
+            errMap.clear();
+            req.setAttribute("errMap", errMap);
             Method method = this.getClass().getMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
             if (method.isAnnotationPresent(Auth.class)) {
                 int rc = checkAuth(req, method.getAnnotation(Auth.class));
@@ -202,5 +207,13 @@ public class BaseServlet extends HttpServlet {
         }
         query = query.substring(0, query.length() - 1);
         return query;
+    }
+
+    protected Map<String, String> getErrMap() {
+        return errMap;
+    }
+
+    protected boolean errMapEmpty() {
+        return errMap.isEmpty();
     }
 }

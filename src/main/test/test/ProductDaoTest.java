@@ -135,13 +135,13 @@ public class ProductDaoTest extends BaseTest {
     public void testFind() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("pageLimit", 20);
-        params.put("toPage", 1);
+        params.put("toPage", 8);
         params.put("pageShow", 10);
 //        params.put("name", "");
 //        params.put("status", PStatus.OffSale);
         params.put("price1", 0);
         params.put("price2", 800);
-        params.put("cid", 9);
+        params.put("cid", 19);
         params.put("sort", "price");
         params.put("order", "desc");
         Pager<Product> pager = pDao.find(params);

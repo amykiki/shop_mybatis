@@ -23,10 +23,9 @@ public class RequestUtil {
     public static Object setFileds(Class<?> clz, HttpServletRequest req, Class annoClz, String action) {
         Map<String, String[]> paraMap  = req.getParameterMap();
         Set<String>           paraKeys = paraMap.keySet();
-        Map<String, String>   errMap   = new HashMap<>();
+        Map<String, String> errMap = (Map<String, String>)req.getAttribute("errMap");
 
         Field[] declarFileds = clz.getDeclaredFields();
-        req.setAttribute("errMap", errMap);
         Object  bean          = null;
         boolean setProperties = false;
         try {

@@ -32,7 +32,7 @@ public class UserDao extends BaseDao<User> implements IUserDao {
     }
 
     @Override
-    public User loadByName(String name) {
+    public User loadByName(String name) throws ShopException{
         return super.loadByName(name);
     }
 

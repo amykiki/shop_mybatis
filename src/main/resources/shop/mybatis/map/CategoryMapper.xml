@@ -5,15 +5,15 @@
 <mapper namespace="shop.mybatis.map.CategoryMapper">
 
     <insert id="addFriendNode" parameterType="map" statementType="CALLABLE">
-        {call addFriendNode(#{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{friendCategory.id, jdbcType=INTEGER, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
+        {call addFriendNode(#{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{friendCategory.name, jdbcType=VARCHAR, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
     </insert>
 
     <insert id="addChildNode" parameterType="map" statementType="CALLABLE">
-        {call addChildNode(#{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{parentCategory.id, jdbcType=INTEGER, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
+        {call addChildNode(#{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{parentCategory.name, jdbcType=VARCHAR, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
     </insert>
 
     <insert id="addParentNode" parameterType="map" statementType="CALLABLE">
-        {call addParentNode(#{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{childCategoryLeft.id, jdbcType=INTEGER, mode=IN}, #{childCategoryRight.id, jdbcType=INTEGER, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
+        {call addParentNode(#{newCategory.name, jdbcType=VARCHAR, mode=IN}, #{childCategoryLeft.name, jdbcType=VARCHAR, mode=IN}, #{childCategoryRight.name, jdbcType=VARCHAR, mode=IN}, #{id, mode=OUT, jdbcType=INTEGER})}
     </insert>
 
     <insert id="delete" parameterType="int" statementType="CALLABLE">

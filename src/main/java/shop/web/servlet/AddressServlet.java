@@ -23,7 +23,6 @@ import java.util.*;
  * Created by Amysue on 2016/3/29.
  */
 public class AddressServlet extends BaseServlet {
-    private static Logger logger = LogManager.getLogger(AddressServlet.class);
     private IAddressDao adao;
     private IUserDao    udao;
 
@@ -72,7 +71,7 @@ public class AddressServlet extends BaseServlet {
     @Auth(value = Role.NORMAL)
     public String addInput(HttpServletRequest req, HttpServletResponse resp) {
         Address             addr    = (Address) RequestUtil.setFileds(Address.class, req, AddFiled.class, "add");
-        Map<String, String> errMap  = (Map<String, String>) req.getAttribute("errMap");
+        Map<String, String> errMap  = getErrMap();
         User                lguser  = lgUser(req);
         boolean             addFail = false;
         if (errMap.isEmpty() && addr != null) {
@@ -112,7 +111,7 @@ public class AddressServlet extends BaseServlet {
             return "/WEB-INF/util/error.jsp";
         }
         Address             caddr  = (Address) RequestUtil.setFileds(Address.class, req, UpdateFiled.class, "update");
-        Map<String, String> errMap = (Map<String, String>) req.getAttribute("errMap");
+        Map<String, String> errMap = getErrMap();
         if (errMap.isEmpty() && caddr != null) {
             caddr.setId(oldaddr.getId());
             adao.update(caddr);

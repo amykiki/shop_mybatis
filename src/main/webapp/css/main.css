@@ -76,11 +76,10 @@ fieldset div {
 }
 #formwrapper .last-radio-div input {
     vertical-align: text-bottom;
-    margin-right: 5px;
 }
 #formwrapper .radio-div label {
     float: none;
-    margin-right: 1px;
+    margin-right: 3px;
 }
 fieldset label.error{
     color: red;
