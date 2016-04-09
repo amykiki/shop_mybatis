@@ -1,5 +1,7 @@
 <%@ page import="shop.enums.Role" %>
-<%@ page import="shop.enums.PStatus" %><%--
+<%@ page import="shop.enums.PStatus" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Map" %><%--
   Created by IntelliJ IDEA.
   User: Amysue
   Date: 2016/4/9
@@ -84,19 +86,158 @@
         }
         #formwrapper {
             margin: 5px auto;
-            padding: 10px;
+            padding: 20px;
+            width: 800px;
+        }
+        #formwrapper fieldset {
+            width: 780px;
+        }
+        .c-search {
+            overflow: auto;
+            border: 1px solid #e8e8e8;
+        }
+        .row {
+            border-top: 1px dashed #dedede;
+            margin: 0 8px;
+            position: relative;
+            overflow: auto;
+        }
+        .c-search-head {
+            color: red;
+            overflow: auto;
+            width: 100px;
+            left: 11px;
+            position: absolute;
+            top: 3px;
+        }
+        .title {
+            float: left;
+            width: 75px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .text {
+            float: left;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .text-depth1 {
+            color: #e74c3c;
+        }
+        .row input {
+            float: left;
+            display: inline-block;
+            height: 16px;
+        }
+        .c-search-body {
+            overflow: auto;
+            width: 500px;
+            right: 0;
+            margin-left: 105px;
+        }
+        .item {
+            clear: none;
+            margin-right: 7px;
+            display: inline-block;
+            width: 65px;
+        }
+        .button {
+            text-align: center;
+            width: auto;
         }
     </style>
+    <script type="text/javascript">
+        function unCheckAll(ele) {
+            var cbs = document.getElementsByTagName('input');
+            for (var i = 0; i < cbs.length; i++) {
+                if (cbs[i].type == 'checkbox') {
+                    cbs[i].checked = false;
+                }
+            }
+        }
+    </script>
 </head>
 <c:set var="allPageNums" value="${pLists.allPageNums}"/>
 <c:set var="currentPage" value="${pLists.currentPage}"/>
 <c:url var="pageurl"
-       value="product.do?method=list&name=${param.name}&status=${param.staus}&price1=${param.price1}&price2=${param.price2}&cid=${param.cid}"/>
+       value="product.do?method=list&name=${param.name}&status=${param.staus}&price1=${param.price1}&price2=${param.price2}"/>
+<c:set var="lastDepth" value="-1"/>
+<c:set var="curDepth" value="0"/>
+<c:set var="ca_depth_name" value=""/>
+<c:set var="ca_depth0_name" value=""/>
+<c:set var="ca_depth1_name" value=""/>
+<c:set var="ca_depth2_name" value=""/>
+<c:set var="pstatus" value="${param.status}"/>
+<%
+    Map<String, String> statusMap = new HashMap<>();
+    statusMap.put(PStatus.All.toString(), "所有商品");
+    statusMap.put(PStatus.InSale.toString(), "上架商品");
+    statusMap.put(PStatus.OffSale.toString(), "下架商品");
+    pageContext.setAttribute("statusMap", statusMap);
+%>
 <body>
+<c:forEach items="${selectcids}" var="scid">
+    <c:url var="pageurl"
+           value="${pageurl}&cids=${scid}"/>
+</c:forEach>
 <div id="formwrapper">
     <form action="/product.do?method=list" method="post">
         <fieldset>
             <legend>商品查询</legend>
+            <div class="c-search">
+                <c:forEach items="${cLists}" var="ca">
+                    <c:set var="curDepth" value="${ca.depth}"/>
+                    <c:if test="${curDepth == 0}">
+                        <c:if test="${lastDepth >= 0}">
+                            <c:if test="${lastDepth > 0}">
+                                </div>
+                            </c:if>
+                            </div>
+                        </c:if>
+                        <div class="row">
+                            <div class="c-search-head">
+                                <c:choose>
+                                    <c:when test="${ca.checked == 1}">
+                                        <input type="checkbox" name="cids" value="${ca.id}" checked>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <input type="checkbox" name="cids" value="${ca.id}">
+                                    </c:otherwise>
+                                </c:choose>
+                                <span class="title" title="${ca.name}">${ca.name}:</span>
+                            </div>
+                    </c:if>
+                    <c:if test="${curDepth > 0}">
+                        <c:if test="${lastDepth == 0}">
+                            <div class="c-search-body">
+                        </c:if>
+                                <div class="item">
+                                    <c:choose>
+                                        <c:when test="${ca.checked == 1}">
+                                            <input type="checkbox" name="cids" value="${ca.id}" checked>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="checkbox" name="cids" value="${ca.id}">
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <c:if test="${curDepth == 1}">
+                                        <span class="text text-depth1" title="${ca.name}">${ca.name}</span>
+                                    </c:if>
+                                    <c:if test="${curDepth == 2}">
+                                        <span class="text" title="${ca.name}">${ca.name}</span>
+                                    </c:if>
+                                </div>
+                    </c:if>
+                    <c:set var="lastDepth" value="${ca.depth}"/>
+                </c:forEach>
+                        <c:if test="${lastDepth > 0}">
+                            </div>
+                        </c:if>
+                        </div>
+            </div>
             <div class="radio-div">
                 <label for="name">商品名</label>
                 <input type="text" name="name" id="name"
@@ -105,23 +246,35 @@
             <div class="radio-div s-price">
                 <label for="price1">价格</label>
                 <input type="text" name="price1" id="price1"
-                       placeholder="￥"${param.price1}"/>
+                       placeholder="￥" value="${param.price1}"/>
                 -
                 <input type="text" name="price2"
-                       placeholder="￥"${param.price2}"/>
+                       placeholder="￥" value="${param.price2}"/>
             </div>
             <c:if test="${lguser.role == ADMIN}">
+                <p></p>
                 <div class="last-radio-div radio-div">
-                    <input type="radio" name="status" id="radio1" value="${All}" checked>
-                    <label for="radio1">所有商品</label>
-                    <input type="radio" name="status" id="radio2" value="${InSale}">
-                    <label for="radio2">上架商品</label>
-                    <input type="radio" name="status" id="radio3" value="${OffSale}">
-                    <label for="radio3">下架商品</label>
+                    <c:if test="${empty param.status}">
+                        <c:set var="pstatus" value="<%=PStatus.All%>"/>
+                    </c:if>
+                    <c:forEach items="${statusMap}" var="item">
+                        <c:choose>
+                            <c:when test="${item.key == pstatus}">
+                                <input type="radio" name="status" id="radio-${item.key}"
+                                       value="${item.key}" checked>
+                            </c:when>
+                            <c:otherwise>
+                                <input type="radio" name="status" id="radio-${item.key}"
+                                       value="${item.key}">
+                            </c:otherwise>
+                        </c:choose>
+                        <label for="radio-${item.key}">${item.value}</label>
+                    </c:forEach>
                 </div>
             </c:if>
-            <
+
             <div class="button">
+                <input type="button" value="取消选择" onclick="unCheckAll(this)"/>
                 <input type="submit" name="search" value="查询"/>
                 <input type="reset" value="重置"/>
                 <div class="clear-float"></div>
@@ -151,7 +304,7 @@
                     <a href="#">添加到购物车</a>
                 </c:if>
                 <c:if test="${pt.status == OffSale}">
-                    已下架
+                    商品已下架
                 </c:if>
             </div>
             <c:if test="${lguser.role == ADMIN}">

@@ -170,6 +170,10 @@ public class BaseServlet extends HttpServlet {
             return -1;
         }
     }
+    protected User getLgUser(HttpServletRequest req) {
+        User u = (User) req.getSession().getAttribute("lguser");
+        return u;
+    }
 
     protected User checkSelf(HttpServletRequest req, boolean addr, IUserDao udao) {
         int  id = getUserId(req);

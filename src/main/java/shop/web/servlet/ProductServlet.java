@@ -2,6 +2,8 @@ package shop.web.servlet;
 
 import shop.dao.ICategoryDao;
 import shop.dao.IProductDao;
+import shop.enums.PStatus;
+import shop.enums.Role;
 import shop.model.Category;
 import shop.model.Pager;
 import shop.model.Product;
@@ -44,6 +46,8 @@ public class ProductServlet extends BaseServlet {
     }
 
     public String list(HttpServletRequest req, HttpServletResponse resp) {
+        List<Category> cLists = cDao.loadLists();
+        req.setAttribute("cLists", cLists);
         Map<String, Object> params = new HashMap<>();
         params.put("pageLimit", pageLimit);
         params.put("pageShow", pageShow);
@@ -55,10 +59,53 @@ public class ProductServlet extends BaseServlet {
         }
         params.put("toPage", toPage);
 
+        List<Integer> cids = getSelected(req, "cids", -1);
+        if (cids.size() > 0) {
+            params.put("cids", cids);
+            req.setAttribute("selectcids", cids);
+            Map<Integer, Integer> cidsMap = new HashMap<>();
+            for (int cid : cids) {
+                cidsMap.put(cid , 1);
+            }
+            for (Category c : cLists) {
+                if (cidsMap.containsKey(c.getId())) {
+                    c.setChecked(1);
+                }
+            }
+
+        }
+        if (req.getParameter("name") != null && !req.getParameter("name").equals("")) {
+            params.put("name", req.getParameter("name"));
+        }
+        if (getLgUser(req).getRole() == Role.ADMIN) {
+            PStatus ps;
+            try {
+                ps = PStatus.valueOf(req.getParameter("status"));
+                if (ps != PStatus.All) {
+                    params.put("status", ps);
+                }
+            } catch (IllegalArgumentException | NullPointerException e) {
+//                e.printStackTrace();
+            }
+        } else {
+            params.put("status", PStatus.InSale);
+        }
+        try {
+            int price1 = Integer.parseInt(req.getParameter("price1"));
+            int price2 = Integer.parseInt(req.getParameter("price2"));
+            if (price2 < price1) {
+               int i = price2;
+                price2 = price1;
+                price1 = i;
+            }
+            params.put("price1", price1);
+            params.put("price2", price2);
+        } catch (NumberFormatException e) {
+//            e.printStackTrace();
+        }
         Pager<Product> pLists = pDao.find(params);
         req.setAttribute("pLists", pLists);
-        List<Category> cLists = cDao.loadLists();
-        req.setAttribute("cLists", cLists);
+
         return pagePath + "list.jsp";
     }
 }

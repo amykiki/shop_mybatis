@@ -19,6 +19,8 @@ public class Category {
     private Category parentCategory;
 //    分类的深度
     private int depth;
+    // TODO: 2016/4/9      用于在页面显示分类是否选中所用，这个方法不太好，需要前端有没有更好的办法
+    private int checked;
 
     public Category() {
     }
@@ -66,6 +68,14 @@ public class Category {
 
     public void setDepth(int depth) {
         this.depth = depth;
+    }
+
+    public int getChecked() {
+        return checked;
+    }
+
+    public void setChecked(int checked) {
+        this.checked = checked;
     }
 
     @Override
