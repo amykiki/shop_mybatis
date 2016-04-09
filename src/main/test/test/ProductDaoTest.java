@@ -56,10 +56,10 @@ public class ProductDaoTest extends BaseTest {
 //        p.setCategory(new Category(6));
         Product p = new Product();
         p.setId(1);
-        p.setPrice(668);
-        p.setStock(120);
-        p.setSales(1);
-        p.setCategory(new Category(24));
+        p.setPrice(628);
+//        p.setStock(200);
+        p.setSales(8);
+//        p.setCategory(new Category(28));
         pDao.update(p);
     }
 
@@ -150,6 +150,26 @@ public class ProductDaoTest extends BaseTest {
             for (Product p : ps) {
                 System.out.println(p);
             }
+        }
+    }
+
+    @Test
+    public void testSetInSale() throws Exception {
+
+    }
+
+    @Test
+    public void testSetOffSale() throws Exception {
+
+    }
+
+    @Test
+    public void testLoadCategoryLists() throws Exception {
+        List<Product> list = pDao.loadCategoryLists(32);
+        if (list != null) {
+            System.out.println(list.size());
+        } else {
+            System.out.println("No Product");
         }
     }
 }

@@ -46,6 +46,12 @@ public class Product {
 
     private Category category;
 
+    public Product() {
+        price = -1;
+        stock = -1;
+        sales = -1;
+    }
+
     public int getId() {
         return id;
     }

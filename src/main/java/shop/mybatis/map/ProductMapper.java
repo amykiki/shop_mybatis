@@ -17,6 +17,8 @@ public interface ProductMapper {
 
     public Product load(int id);
 
+    public List<Product> loadCategoryLists(int cid);
+
     public int delete(int id);
 
     public int setPrice(@Param("id") int id, @Param("price") double price);

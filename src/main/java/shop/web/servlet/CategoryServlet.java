@@ -92,7 +92,7 @@ public class CategoryServlet extends BaseServlet {
             cDao.delete(c.getId());
             return getRedirectTo() + "category.do?method=list";
         } catch (ShopException e) {
-            getErrMap().put("name", req.getParameter("name") + "分类名不存在");
+            getErrMap().put("name", e.getMessage());
         }
         return pagePath + "deleteInput.jsp";
     }

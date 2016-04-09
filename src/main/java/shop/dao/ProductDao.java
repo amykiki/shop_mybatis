@@ -1,11 +1,13 @@
 package shop.dao;
 
 import shop.enums.PStatus;
+import shop.model.Category;
 import shop.model.Pager;
 import shop.model.Product;
 import shop.mybatis.map.ProductMapper;
 import shop.util.ShopException;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -110,5 +112,18 @@ public class ProductDao extends BaseDao<Product> implements IProductDao{
     @Override
     public Pager<Product> find(Map<String, Object> params) {
         return super.find(params);
+    }
+
+    @Override
+    public List<Product> loadCategoryLists(int cid) {
+        Object[]   params = new Object[]{cid};
+        Class<?>[] pClz   = new Class[]{int.class};
+        try {
+            return (List<Product>) super.runSelectMethod("loadCategoryLists", params, pClz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.debug("Load Product Lists cid = " + cid + " fail" + e.getMessage());
+        }
+        return null;
     }
 }

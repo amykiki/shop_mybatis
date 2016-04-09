@@ -2,17 +2,27 @@ package shop.dao;
 
 import shop.enums.Role;
 import shop.model.Category;
+import shop.model.Product;
 import shop.mybatis.map.CategoryMapper;
+import shop.util.ShopDi;
 import shop.util.ShopException;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by Amysue on 2016/4/5.
  */
 public class CategoryDao extends BaseDao<Category> implements ICategoryDao{
+    private IProductDao pDao;
     public CategoryDao() {
         super(CategoryMapper.class);
+        DaoFactory.setDao(this);
+    }
+
+    @ShopDi("productDao")
+    public void setpDao(IProductDao pDao) {
+        this.pDao = pDao;
     }
 
     public Category getByName(String name) {
@@ -98,6 +108,11 @@ public class CategoryDao extends BaseDao<Category> implements ICategoryDao{
 
     @Override
     public int delete(int id) throws ShopException {
+        List<Product> list = pDao.loadCategoryLists(id);
+        if (list.size() > 0) {
+            logger.debug("Category " + id + " has products, can't be delete");
+            throw new ShopException("Category " + id + " has products, can't be delete");
+        }
         return super.delete(id);
     }
 

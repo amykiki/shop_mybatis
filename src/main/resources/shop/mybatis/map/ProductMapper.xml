@@ -11,12 +11,18 @@
         UPDATE t_product
         <set>
             <if test="name != null">name=#{name},</if>
-            <if test="price != null">price=#{price},</if>
+            <if test="price != null and price >= 0">
+              price=#{price},
+            </if>
             <if test="intro != null">intro=#{intro},</if>
             <if test="img != null">img=#{img},</if>
-            <if test="stock != null">stock=#{stock},</if>
+            <if test="stock != null and stock >= 0">
+                stock=#{stock},
+            </if>
             <if test="status != null">status=#{status},</if>
-            <if test="sales != null">sales=#{sales},</if>
+            <if test="sales != null and sales >= 0">
+                sales=#{sales},
+            </if>
             <if test="category != null">c_id=#{category.id}</if>
         </set>
         WHERE id = #{id}
@@ -35,6 +41,14 @@
         LEFT JOIN t_category AS c
         ON p.c_id = c.id
         WHERE p.id = #{id};
+    </select>
+
+    <select id="loadCategoryLists" parameterType="int" resultMap="productMap">
+        SELECT *, p.id AS p_id, p.name as p_name, c.name as c_name
+        FROM t_product AS p
+        LEFT JOIN t_category AS c
+        ON p.c_id = c.id
+        WHERE p.c_id = #{cid};
     </select>
 
     <delete id="delete" parameterType="int">

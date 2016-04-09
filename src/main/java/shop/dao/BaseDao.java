@@ -61,7 +61,7 @@ public class BaseDao<T> {
         }
         if (obj == null) {
             logger.debug("method LoadByName Failed");
-            throw new ShopException("method LoadByName Failed");
+            throw new ShopException(name + "不存在");
         }
         return obj;
     }
