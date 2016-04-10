@@ -19,7 +19,7 @@ public class Product {
     @NotNull
     @AddFiled
     @UpdateFiled
-    @CheckPrice(errMsg = "价格必须为数字，单位为元， 且小数点后最多有两位")
+    @CheckPrice(errMsg = "价格单位为元，必须为数字,小数点后最多有两位")
     private double price;
 
     @AddFiled
@@ -36,7 +36,7 @@ public class Product {
     @NotNull
     @AddFiled
     @UpdateFiled
-    @CheckNum(errMsg = "商品库存必须为大于等于0数字", length = 1)
+    @CheckNum(errMsg = "商品库存必须为大于等于0整数", length = 1)
     private int stock;
 
     // TODO: 2016/4/7  默认值为0，所以在update时候需要注意，必须加上值，不能用默认

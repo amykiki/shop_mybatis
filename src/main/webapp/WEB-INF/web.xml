@@ -4,11 +4,24 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
   <display-name>Archetype Created Web Application</display-name>
-    
+
+    <!--default temp file dir-->
+    <context-param>
+        <param-name>tempdir</param-name>
+        <param-value>temp</param-value>
+    </context-param>
+    <context-param>
+        <param-name>imgdir</param-name>
+        <param-value>img</param-value>
+    </context-param>
+    <!--diskfileitem Resource cleanup-->
+    <listener>
+        <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
+    </listener>
     <!--Log4j2 listener and filter-->
-  <listener>
-      <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
-  </listener>
+    <listener>
+        <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+    </listener>
     <filter>
         <filter-name>log4jServletFilter</filter-name>
         <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>

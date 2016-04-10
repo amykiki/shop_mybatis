@@ -1,5 +1,8 @@
 package shop.web.servlet;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import shop.dao.DaoFactory;
@@ -9,12 +12,14 @@ import shop.enums.Role;
 import shop.model.User;
 import shop.util.ShopException;
 import shop.web.annotation.Auth;
+import shop.web.filter.MultiPartWrapper;
 
-import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,8 +32,8 @@ import java.util.Map;
  * Created by Amysue on 2016/3/23.
  */
 public class BaseServlet extends HttpServlet {
-    private final String redirectTo = "redirect:";
-    private Map<String, String> errMap = new HashMap<>();
+    private final String              redirectTo = "redirect:";
+    private       Map<String, String> errMap     = new HashMap<>();
     protected Logger logger;
 
     public BaseServlet() {
@@ -46,11 +51,18 @@ public class BaseServlet extends HttpServlet {
             u.setRole(Role.ANON);
             req.getSession().setAttribute("lguser", u);
         }
+        errMap.clear();
+        req.setAttribute("errMap", errMap);
+        if (ServletFileUpload.isMultipartContent(req)) {
+            try {
+                req = new MultiPartWrapper(req);
+            } catch (FileUploadException e) {
+                e.printStackTrace();
+            }
+        }
         String methodName = req.getParameter("method");
         logger.debug(req.getRequestURL().append('?').append(getQuery(req)));
         try {
-            errMap.clear();
-            req.setAttribute("errMap", errMap);
             Method method = this.getClass().getMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
             if (method.isAnnotationPresent(Auth.class)) {
                 int rc = checkAuth(req, method.getAnnotation(Auth.class));
@@ -170,6 +182,7 @@ public class BaseServlet extends HttpServlet {
             return -1;
         }
     }
+
     protected User getLgUser(HttpServletRequest req) {
         User u = (User) req.getSession().getAttribute("lguser");
         return u;
@@ -219,5 +232,30 @@ public class BaseServlet extends HttpServlet {
 
     protected boolean errMapEmpty() {
         return errMap.isEmpty();
+    }
+
+    protected void uploadImage(FileItem item, String fileName, String fieldName, HttpServletRequest req) throws ShopException {
+        String filePath = getUploadPath(req, "imgdir", fileName);
+        File   storeFile = new File(filePath);
+        try {
+            item.write(storeFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            errMap.put(fieldName, e.getMessage());
+            logger.debug(fieldName, e.getMessage());
+            throw new ShopException("上传" + fileName + "失败");
+        }
+        return;
+    }
+
+    protected String getUploadPath(HttpServletRequest req, String pathName, String fileName) {
+        ServletContext context    = req.getServletContext();
+        String         imgDir     = context.getInitParameter(pathName);
+        String         uploadPath = context.getRealPath("") + File.separator + imgDir;
+        logger.debug("uploadPath=" + uploadPath);
+        String filePath = fileName.substring(fileName.lastIndexOf("/") + 1);
+        filePath  = uploadPath + File.separator + filePath;
+        logger.debug("filePath=" + filePath);
+        return filePath;
     }
 }

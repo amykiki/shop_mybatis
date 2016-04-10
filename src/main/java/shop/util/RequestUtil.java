@@ -3,9 +3,7 @@ package shop.util;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import shop.web.annotation.CheckNum;
-import shop.web.annotation.CheckEmpty;
-import shop.web.annotation.NotNull;
+import shop.web.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
@@ -13,6 +11,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Amysue on 2016/3/23.
@@ -23,9 +23,9 @@ public class RequestUtil {
     public static Object setFileds(Class<?> clz, HttpServletRequest req, Class annoClz, String action) {
         Map<String, String[]> paraMap  = req.getParameterMap();
         Set<String>           paraKeys = paraMap.keySet();
-        Map<String, String> errMap = (Map<String, String>)req.getAttribute("errMap");
+        Map<String, String>   errMap   = (Map<String, String>) req.getAttribute("errMap");
 
-        Field[] declarFileds = clz.getDeclaredFields();
+        Field[] declarFileds  = clz.getDeclaredFields();
         Object  bean          = null;
         boolean setProperties = false;
         try {
@@ -43,7 +43,12 @@ public class RequestUtil {
                 if (paraValues == null) {
                     logger.debug(annoKey + " is not existed");
                     if (declarFiled.isAnnotationPresent(NotNull.class) && action.equals("add")) {
-                        errMap.put(annoKey, annoKey + "属性是必须的");
+                        if (errMap.get(annoKey) != null) {
+                            String str = errMap.get(annoKey);
+                            errMap.put(annoKey, str + "," + annoKey + "属性是必须的");
+                        } else {
+                            errMap.put(annoKey, annoKey + "属性是必须的");
+                        }
                         logger.debug(annoKey + " is NULL");
                     }
                     continue;
@@ -60,7 +65,12 @@ public class RequestUtil {
                         String errMsg = validate(declarFiled, paraValue);
                         if (!errMsg.equals("")) {
                             logger.debug(annoKey + ":" + errMsg);
-                            errMap.put(annoKey, errMsg);
+                            if (errMap.get(annoKey) != null) {
+                                String str = errMap.get(annoKey);
+                                errMap.put(annoKey, str + "," + errMsg);
+                            } else {
+                                errMap.put(annoKey, errMsg);
+                            }
                         }
                     }
                     BeanUtils.setProperty(bean, annoKey, paraValue);
@@ -152,6 +162,30 @@ public class RequestUtil {
             return errMsg;
         }
         return null;
+    }
 
+    private static String CheckImg(Object obj, Field f) {
+        String   errMsg = f.getAnnotation(CheckImg.class).errMsg();
+        String[] values = f.getAnnotation(CheckImg.class).value();
+        String   str    = (String) obj;
+        String   suffix = str.substring(str.lastIndexOf(".") + 1);
+        for (String v : values) {
+            if (suffix.equals(v)) {
+                return null;
+            }
+        }
+        return errMsg;
+    }
+
+    private static String CheckPrice(Object obj, Field f) {
+        String errMsg = f.getAnnotation(CheckPrice.class).errMsg();
+        String str    = (String) obj;
+        if (obj == null) {
+            return errMsg;
+        }
+        if (!str.matches("\\d+(\\.\\d{1,2})?")) {
+            return errMsg;
+        }
+        return null;
     }
 }
