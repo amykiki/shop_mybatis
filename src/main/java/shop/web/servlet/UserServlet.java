@@ -61,7 +61,7 @@ public class UserServlet extends BaseServlet {
             }
             return "/WEB-INF/user/login.jsp";
         }
-        return getRedirectTo() + "/category.do?method=list";
+        return getRedirectTo() + "/product.do?method=list";
 
     }
 

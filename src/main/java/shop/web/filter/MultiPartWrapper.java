@@ -107,6 +107,7 @@ public class MultiPartWrapper extends HttpServletRequestWrapper {
             if (fileSize > maxFileSize) {
                 logger.debug("上传文件大小过大，不能上传");
                 errMap.put(fieldName, "上传文件大小过大，不能上传");
+                item.delete();
             }
 
         } catch (IOException e) {

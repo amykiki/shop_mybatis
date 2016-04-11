@@ -40,6 +40,8 @@ public class Product {
     private int stock;
 
     // TODO: 2016/4/7  默认值为0，所以在update时候需要注意，必须加上值，不能用默认
+    @UpdateFiled
+    @CheckNum(errMsg = "商品销量必须为大于等于0整数", length = 1)
     private int sales;
 
     private PStatus status;

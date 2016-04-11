@@ -1,6 +1,8 @@
 package shop.web.servlet;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import shop.dao.ICategoryDao;
 import shop.dao.IProductDao;
 import shop.enums.PStatus;
@@ -13,6 +15,7 @@ import shop.util.ShopDi;
 import shop.util.ShopException;
 import shop.web.annotation.AddFiled;
 import shop.web.annotation.Auth;
+import shop.web.annotation.UpdateFiled;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -22,6 +25,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
 
 /**
  * Created by Amysue on 2016/4/9.
@@ -161,4 +165,85 @@ public class ProductServlet extends BaseServlet {
         }
         return add(req, resp);
     }
+
+    @Auth(Role.ADMIN)
+    public String updateName(HttpServletRequest req, HttpServletResponse resp) {
+        req.setAttribute("method", "updateNameInput");
+        req.setAttribute("field", "name");
+        return pagePath + "updateFieldInput.jsp";
+    }
+
+    @Auth(Role.ADMIN)
+    public String updateNameInput(HttpServletRequest req, HttpServletResponse resp) {
+        int     id = getId(req, "pid");
+        Product p  = (Product) RequestUtil.setFileds(Product.class, req, UpdateFiled.class, "update");
+        if (errMapEmpty() && p != null && id > 0) {
+            p.setId(id);
+            pDao.setName(p);
+            return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
+        }
+        return updateName(req, resp);
+    }
+
+    @Auth(Role.ADMIN)
+    public String updateStock(HttpServletRequest req, HttpServletResponse resp) {
+        req.setAttribute("method", "updateStockInput");
+        req.setAttribute("field", "stock");
+        return pagePath + "updateFieldInput.jsp";
+    }
+
+    @Auth(Role.ADMIN)
+    public String updateStockInput(HttpServletRequest req, HttpServletResponse resp) {
+        int     id     = getId(req, "pid");
+        int     stock  = 0;
+        boolean update = false;
+        try {
+            stock = Integer.parseInt(req.getParameter("stock"));
+        } catch (NumberFormatException e) {
+            getErrMap().put("stock", "库存必须为正整数");
+        }
+        if (stock < 0) {
+            getErrMap().put("stock", "库存必须为正整数");
+        }
+        if (errMapEmpty() && id > 0) {
+            String type = req.getParameter("type");
+            if (type.equals("add")) {
+                pDao.addStock(id, stock);
+                update = true;
+            } else if (type.equals("reduce")) {
+                try {
+                    pDao.reduceStock(id, stock);
+                    update = true;
+                } catch (ShopException e) {
+                    e.printStackTrace();
+                    getErrMap().put("stock", e.getMessage());
+                }
+            }
+        }
+        if (update) {
+            return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
+        } else {
+            return updateStock(req, resp);
+        }
+    }
+
+    public String updateStatus(HttpServletRequest req, HttpServletResponse resp) {
+        int     id     = getId(req, "pid");
+        PStatus status = null;
+        try {
+            status = PStatus.valueOf(req.getParameter("type"));
+            if (id > 0) {
+                Product p = new Product();
+                p.setId(id);
+                p.setStatus(status);
+                pDao.setStatus(p);
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
+    }
+
 }
+
+

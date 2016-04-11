@@ -19,12 +19,14 @@ public interface IProductDao {
     public List<Product> loadCategoryLists(int cid);
 
     public int delete(int id) throws ShopException;
-    public int setPrice(int id, double price);
-    public int setStock(int id, int stock);
-    public int setSales(int id, int sales);
-    public int setStatus(int id, PStatus status);
-    public int setInSale(int id);
-    public int setOffSale(int id);
+    public int setPrice(Product product);
+    public int setSales(Product product);
+    public int setStock(Product product);
+    public int setStatus(Product product);
+
+    public int setName(Product product);
+//    public int setInSale(Product product);
+//    public int setOffSale(Product product);
 
     public int addStock(int id, int addStock);
 

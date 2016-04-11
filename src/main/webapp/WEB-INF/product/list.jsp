@@ -23,7 +23,7 @@
                 width: 750px;
             </c:if>
             <c:if test="${lguser.role != ADMIN}">
-                width: 720px;
+                width: 680px;
             </c:if>
             margin: 4px auto;
             overflow: auto;
@@ -44,14 +44,30 @@
         }
         .col-2 {
             margin-left: 20px;
-            width: 240px;
+            /*width: 180px;*/
             text-align: left;
             font-size: 14px;
+            <c:if test="${lguser.role == ADMIN}">
+                width: 180px;
+            </c:if>
+            <c:if test="${lguser.role != ADMIN}">
+                width: 230px;
+            </c:if>
+        }
+        .col-2 a {
+            text-align: left;
         }
         .col-3 {
-            margin-left: 20px;
+            margin-left: 5px;
+            /*margin-right: 15px;*/
             text-align: center;
-            width: 140px;
+            width: 110px;
+            <c:if test="${lguser.role == ADMIN}">
+                margin-right: 15px;
+            </c:if>
+            <c:if test="${lguser.role != ADMIN}">
+                margin-right: 25px;
+            </c:if>
         }
         .g_price {
             font-size: 18px;
@@ -64,12 +80,22 @@
         .deal-cnt {
             color: #888;
         }
+        p.deal-cnt a{
+            font-size: 11px;
+            color: #7a991a;
+        }
 
         .col-4 {
-            margin-left: 20px;
-            width: 100px;
+            margin-left: 30px;
+            /*width: 100px;*/
             text-align: left;
             font-size: 12px;
+            <c:if test="${lguser.role == ADMIN}">
+                width: 100px;
+            </c:if>
+            <c:if test="${lguser.role != ADMIN}">
+                width: 120px;
+            </c:if>
         }
         .col a {
             color: #3d3d3d;
@@ -77,6 +103,9 @@
             display: inline-block;
             vertical-align: middle;
             line-height: normal;
+        }
+        .col-4 a {
+            color: #7a991a;
         }
         .col-5 a {
             color: #7a991a;
@@ -171,6 +200,7 @@
 <c:set var="ca_depth1_name" value=""/>
 <c:set var="ca_depth2_name" value=""/>
 <c:set var="pstatus" value="${param.status}"/>
+<c:url var="updateurl" value="/product.do?toPage=${currentPage}"/>
 <%
     Map<String, String> statusMap = new HashMap<>();
     statusMap.put(PStatus.All.toString(), "所有商品");
@@ -291,6 +321,9 @@
             </div>
             <div class="col col-2">
                 <a href="#">${pt.name}</a>
+                <c:if test="${lguser.role == ADMIN}">
+                    <p class="deal-cnt"><a href="${updateurl}&pid=${pt.id}&method=updateName">修改商品名</a> </p>
+                </c:if>
             </div>
             <div class="col col-3">
                 <span class="g_price">
@@ -298,6 +331,16 @@
                     <strong>${pt.price}</strong>
                 </span>
                 <p class="deal-cnt">${pt.sales}人付款</p>
+            </div>
+            <div class="col col-5">
+                <span>
+                    <span>库存</span>
+                    <strong>${pt.stock}</strong>
+                </span>
+                <c:if test="${lguser.role == ADMIN}">
+                    <p class="deal-cnt"><a href="${updateurl}&pid=${pt.id}&method=updateStock&type=add">增加库存</a> </p>
+                    <p class="deal-cnt"><a href="${updateurl}&pid=${pt.id}&method=updateStock&type=reduce">减少库存</a> </p>
+                </c:if>
             </div>
             <div class="col col-4">
                 <c:if test="${pt.status == InSale}">
@@ -312,10 +355,10 @@
                     <span>
                         <a href="#">编辑</a>
                         <c:if test="${pt.status == InSale}">
-                            <a href="#">下架</a>
+                            <a href="${updateurl}&pid=${pt.id}&method=updateStatus&type=OffSale">下架</a>
                         </c:if>
                         <c:if test="${pt.status == OffSale}">
-                            <a href="#">上架</a>
+                            <a href="${updateurl}&pid=${pt.id}&method=updateStatus&type=InSale">上架</a>
                         </c:if>
                         <a href="#">删除</a>
                     </span>

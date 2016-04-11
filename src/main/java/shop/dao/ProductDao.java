@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by Amysue on 2016/4/7.
  */
-public class ProductDao extends BaseDao<Product> implements IProductDao{
+public class ProductDao extends BaseDao<Product> implements IProductDao {
     public ProductDao() {
         super(ProductMapper.class);
     }
@@ -40,41 +40,36 @@ public class ProductDao extends BaseDao<Product> implements IProductDao{
     }
 
     @Override
-    public int setPrice(int id, double price) {
-        return setMethod(id, price, double.class, "setPrice");
+    public int setPrice(Product product) {
+        return setMethod(product, "setPrice");
     }
 
     @Override
-    public int setStock(int id, int stock) {
-        return setMethod(id, stock, int.class, "setStock");
+    public int setStock(Product product) {
+        return setMethod(product, "setStock");
     }
 
     @Override
-    public int setSales(int id, int sales) {
-        return setMethod(id, sales, int.class, "setSales");
+    public int setSales(Product product) {
+        return setMethod(product, "setSales");
     }
 
     @Override
-    public int setStatus(int id, PStatus status) {
-        return setMethod(id, status, PStatus.class, "setStatus");
-    }
-    @Override
-    public int setInSale(int id) {
-        PStatus ps = PStatus.InSale;
-        return setMethod(id, ps, PStatus.class, "setStatus");
-    }
-    @Override
-    public int setOffSale(int id) {
-        PStatus ps = PStatus.OffSale;
-        return setMethod(id, ps, PStatus.class, "setStatus");
+    public int setStatus(Product product) {
+        return setMethod(product, "setStatus");
     }
 
-    private int setMethod(int id, Object o, Class clz, String method) {
-        Object[]   params = new Object[]{id, o};
-        Class<?>[] pClz   = new Class[]{int.class, clz};
-        int affectedRow = 0;
+    @Override
+    public int setName(Product product) {
+        return setMethod(product, "setName");
+    }
+
+    private int setMethod(Product p, String method) {
+        Object[]   params      = new Object[]{p};
+        Class<?>[] pClz        = new Class[]{Product.class};
+        int        affectedRow = 0;
         try {
-            affectedRow = (int)super.runMethod(method, params, pClz);
+            affectedRow = (int) super.runMethod(method, params, pClz);
         } catch (Exception e) {
             logger.debug(method + " fail");
             e.printStackTrace();
@@ -85,9 +80,10 @@ public class ProductDao extends BaseDao<Product> implements IProductDao{
     @Override
     public int addStock(int id, int addStock) {
         try {
-            int oldStock = load(id).getStock();
-            int stock = oldStock + addStock;
-            return setStock(id, stock);
+            Product p     = load(id);
+            int     stock = p.getStock() + addStock;
+            p.setStock(stock);
+            return setStock(p);
         } catch (ShopException e) {
             e.printStackTrace();
         }
@@ -95,18 +91,13 @@ public class ProductDao extends BaseDao<Product> implements IProductDao{
     }
 
     @Override
-    public int reduceStock(int id, int reduceStock) throws ShopException{
-        try {
-            int oldStock = load(id).getStock();
-            if (oldStock < reduceStock) {
-                throw new ShopException("减少的商品数量多于商品库存，请重新输入");
-            }
-            int stock = oldStock - reduceStock;
-            return setStock(id, stock);
-        } catch (ShopException e) {
-            e.printStackTrace();
+    public int reduceStock(int id, int reduceStock) throws ShopException {
+        Product p = load(id);
+        if (p.getStock() < reduceStock) {
+            throw new ShopException("减少的商品数量多于商品库存，请重新输入");
         }
-        return 0;
+        p.setStock(p.getStock() - reduceStock);
+        return setStock(p);
     }
 
     @Override

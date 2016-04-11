@@ -79,7 +79,10 @@ public class ProductDaoTest extends BaseTest {
     public void testSetPrice() throws Exception {
         int id    = 1;
         int price = 666;
-        int row   = pDao.setPrice(id, price);
+        Product p = new Product();
+        p.setId(id);
+        p.setPrice(price);
+        int row   = pDao.setPrice(p);
         System.out.println("row = " + row);
         System.out.println(pDao.load(id));
     }
@@ -88,7 +91,10 @@ public class ProductDaoTest extends BaseTest {
     public void testSetStock() throws Exception {
         int id    = 3;
         int stock = 400;
-        int row   = pDao.setStock(id, stock);
+        Product p = new Product();
+        p.setId(id);
+        p.setStock(stock);
+        int row   = pDao.setStock(p);
         System.out.println("row = " + row);
         System.out.println(pDao.load(id));
     }
@@ -97,7 +103,10 @@ public class ProductDaoTest extends BaseTest {
     public void testSetSales() throws Exception {
         int id    = 1;
         int sales = 8;
-        int row   = pDao.setSales(id, sales);
+        Product p = new Product();
+        p.setId(id);
+        p.setSales(sales);
+        int row   = pDao.setSales(p);
         System.out.println("row = " + row);
         System.out.println(pDao.load(id));
     }
@@ -106,7 +115,10 @@ public class ProductDaoTest extends BaseTest {
     public void testSetStatus() throws Exception {
         int     id     = 3;
         PStatus status = PStatus.OffSale;
-        int     row    = pDao.setStatus(id, status);
+        Product p = new Product();
+        p.setId(id);
+        p.setStatus(status);
+        int     row    = pDao.setStatus(p);
         System.out.println("row = " + row);
         System.out.println(pDao.load(id));
     }

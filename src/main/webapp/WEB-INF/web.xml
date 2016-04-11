@@ -95,7 +95,7 @@
         <servlet-class>shop.web.servlet.ProductServlet</servlet-class>
         <init-param>
             <param-name>pageLimit</param-name>
-            <param-value>15</param-value>
+            <param-value>10</param-value>
         </init-param>
         <init-param>
             <param-name>pageShow</param-name>

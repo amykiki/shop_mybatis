@@ -55,7 +55,11 @@
         DELETE FROM t_product WHERE id = #{id}
     </delete>
 
-    <update id="setPrice" parameterType="map">
+    <update id="setName" parameterType="Product">
+        UPDATE t_product SET name = #{name} WHERE id = #{id}
+    </update>
+
+    <update id="setPrice" parameterType="Product">
         UPDATE t_product SET price = #{price} WHERE id = #{id}
     </update>
 
