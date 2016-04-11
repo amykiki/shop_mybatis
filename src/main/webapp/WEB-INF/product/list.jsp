@@ -321,7 +321,7 @@
                 <img class="img" src="<c:url value="${pt.img}"/>">
             </div>
             <div class="col col-2">
-                <a href="#">${pt.name}</a>
+                <a href="${updateurl}&pid=${pt.id}&method=show">${pt.name}</a>
                 <c:if test="${lguser.role == ADMIN}">
                     <p class="deal-cnt"><a href="${updateurl}&pid=${pt.id}&method=updateName">修改商品名</a> </p>
                 </c:if>
@@ -361,7 +361,7 @@
                         <c:if test="${pt.status == OffSale}">
                             <a href="${updateurl}&pid=${pt.id}&method=updateStatus&type=InSale">上架</a>
                         </c:if>
-                        <a href="#">删除</a>
+                        <a href="${updateurl}&pid=${pt.id}&method=delete">删除</a>
                     </span>
                 </div>
             </c:if>

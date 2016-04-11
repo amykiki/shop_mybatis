@@ -334,6 +334,40 @@ public class ProductServlet extends BaseServlet {
         return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
     }
 
+    @Auth(Role.ADMIN)
+    public String delete(HttpServletRequest req, HttpServletResponse resp) {
+        int id = getId(req, "pid");
+        if (id > 0) {
+            try {
+                pDao.delete(id);
+            } catch (ShopException e) {
+                logger.debug(e.getMessage());
+            }
+        } else {
+            logger.debug("不存在的商品id" + id);
+        }
+        return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
+
+    }
+
+    public String show(HttpServletRequest req, HttpServletResponse resp) {
+        int id = getId(req, "pid");
+        if (id <= 0) {
+            logger.debug("商品id不存在");
+            return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
+        }
+        Product cp = null;
+        try {
+            cp = pDao.load(id);
+        } catch (ShopException e) {
+            logger.debug("商品id不存在");
+            return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
+        }
+        req.setAttribute("cp", cp);
+        return pagePath + "show.jsp";
+    }
+
+
 }
 
 
