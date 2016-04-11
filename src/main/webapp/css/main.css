@@ -97,6 +97,12 @@ fieldset .textarea-div label {
     float: none;
     margin-right: 3px;
 }
+fieldset .error {
+    float: none;
+    width: auto;
+    display: block;
+    text-align: center;
+}
 fieldset label.error{
     color: red;
     font-weight: bold;

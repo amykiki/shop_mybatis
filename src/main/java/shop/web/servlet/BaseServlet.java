@@ -243,6 +243,7 @@ public class BaseServlet extends HttpServlet {
             e.printStackTrace();
             errMap.put(fieldName, e.getMessage());
             logger.debug(fieldName, e.getMessage());
+            storeFile.delete();
             throw new ShopException("上传" + fileName + "失败");
         }
         return;

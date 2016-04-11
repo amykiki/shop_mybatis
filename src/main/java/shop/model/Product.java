@@ -44,6 +44,7 @@ public class Product {
     @CheckNum(errMsg = "商品销量必须为大于等于0整数", length = 1)
     private int sales;
 
+    @UpdateFiled
     private PStatus status;
 
     private Category category;

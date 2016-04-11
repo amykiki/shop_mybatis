@@ -313,6 +313,7 @@
         </fieldset>
     </form>
 </div>
+<label class="error">${errMap.errMsg}</label>
 <c:forEach items="${pLists.tLists}" var="pt">
     <c:if test="${(pt.status == InSale) || (lguser.role == ADMIN)}">
         <div class="pt_div">
@@ -353,7 +354,7 @@
             <c:if test="${lguser.role == ADMIN}">
                 <div class="col col-5">
                     <span>
-                        <a href="#">编辑</a>
+                        <a href="${updateurl}&pid=${pt.id}&method=update">编辑</a>
                         <c:if test="${pt.status == InSale}">
                             <a href="${updateurl}&pid=${pt.id}&method=updateStatus&type=OffSale">下架</a>
                         </c:if>

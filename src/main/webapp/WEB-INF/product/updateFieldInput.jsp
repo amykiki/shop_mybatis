@@ -27,12 +27,6 @@
     </c:if>
     <title>修改商品${title}</title>
     <style>
-        fieldset .error {
-            float: none;
-            width: auto;
-            display: block;
-            text-align: center;
-        }
         .but-a {
             background: #ffffff;
             border: 1px solid #A4CDF2;

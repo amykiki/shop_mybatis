@@ -1,8 +1,11 @@
 package shop.util;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import shop.enums.PStatus;
 import shop.web.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,9 +13,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Amysue on 2016/3/23.
@@ -35,6 +37,8 @@ public class RequestUtil {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+        ConvertUtils.register(new PStatusConvert(), PStatus.class);
+//        BeanUtilsBean beanUtils = new BeanUtilsBean();
         for (Field declarFiled : declarFileds) {
             declarFiled.setAccessible(true);
             String annoKey = declarFiled.getName();

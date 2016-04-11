@@ -153,8 +153,7 @@ public class ProductServlet extends BaseServlet {
                 return getRedirectTo() + "/product.do?method=list";
             } catch (ShopException e) {
                 logger.debug(e.getMessage());
-                File f = new File(getUploadPath(req, "imgdir", p.getImg()));
-                f.delete();
+                getErrMap().put("img", e.getMessage());
             } finally {
                 item.delete();
                 req.removeAttribute("fileItem-img");
@@ -165,7 +164,97 @@ public class ProductServlet extends BaseServlet {
         }
         return add(req, resp);
     }
+    @Auth(Role.ADMIN)
+    public String updateInput(HttpServletRequest req, HttpServletResponse resp) {
+        int id = getId(req, "pid");
+        if (id <= 0) {
+            getErrMap().put("errMsg", "商品id不存在");
+            return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
+        }
+        Product op = null;
+        try {
+            op = pDao.load(id);
+        } catch (ShopException e) {
+            getErrMap().put("errMsg", "商品id不存在");
+            return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
+        }
 
+        Product cp = (Product) RequestUtil.setFileds(Product.class, req, UpdateFiled.class, "update");
+        if (!getErrMap().containsKey("img") && cp.getImg() != null) {
+            logger.debug("上传新产品图片");
+            FileItem item = (FileItem) req.getAttribute("fileItem-img");
+            logger.debug("item is memory-------" + item.isInMemory());
+            try {
+                uploadImage(item, cp.getImg(), "img", req);
+                File oldPic = new File(getUploadPath(req, "imgdir", op.getImg()));
+                oldPic.delete();
+                logger.debug("删除" + op.getImg());
+                logger.debug("替换原有的图片路径");
+                op.setImg(cp.getImg());
+                pDao.update(op);
+            } catch (ShopException e) {
+                logger.debug(e.getMessage());
+                getErrMap().put("img", e.getMessage());
+            } finally {
+                item.delete();
+                req.removeAttribute("fileItem-img");
+            }
+        } else {
+            cp.setImg(op.getImg());
+            if (getErrMap().get("img").startsWith("没有上传的文件")) {
+                getErrMap().remove("img");
+            }
+        }
+
+        if (getErrMap().containsKey("price")) {
+            cp.setPrice(op.getPrice());
+        }
+        if (getErrMap().containsKey("stock")) {
+            cp.setStock(op.getStock());
+        }
+        logger.debug("============"+ cp.getStatus().toString());
+        int cid = getId(req, "cid");
+        if (cid == op.getCategory().getId()) {
+            cp.setCategory(op.getCategory());
+        } else {
+            try {
+                Category c = cDao.load(cid);
+                cp.setCategory(c);
+            } catch (ShopException e) {
+                getErrMap().put("cid", "请选择商品类别");
+            }
+        }
+
+        if (errMapEmpty()) {
+            cp.setId(op.getId());
+            pDao.update(cp);
+            return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
+        }
+
+        req.setAttribute("cp", cp);
+        List<Category> cLists = cDao.loadLists();
+        req.setAttribute("cLists", cLists);
+        return pagePath + "updateInput.jsp";
+    }
+    @Auth(Role.ADMIN)
+    public String update(HttpServletRequest req, HttpServletResponse resp) {
+        int id = getId(req, "pid");
+        if (id <= 0) {
+            getErrMap().put("errMsg", "商品id不存在");
+            return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
+        }
+        Product cp = null;
+        try {
+            cp = pDao.load(id);
+        } catch (ShopException e) {
+            getErrMap().put("errMsg", "商品id不存在");
+            return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
+        }
+        req.setAttribute("cp", cp);
+        List<Category> cLists = cDao.loadLists();
+        req.setAttribute("cLists", cLists);
+        return pagePath + "updateInput.jsp";
+    }
     @Auth(Role.ADMIN)
     public String updateName(HttpServletRequest req, HttpServletResponse resp) {
         req.setAttribute("method", "updateNameInput");
@@ -227,6 +316,7 @@ public class ProductServlet extends BaseServlet {
         }
     }
 
+    @Auth(Role.ADMIN)
     public String updateStatus(HttpServletRequest req, HttpServletResponse resp) {
         int     id     = getId(req, "pid");
         PStatus status = null;
