@@ -67,14 +67,14 @@ public class MultiPartWrapper extends HttpServletRequestWrapper {
         // TODO: 2016/4/11  解析，先不设置最大上传值，在后续代码解决
 //        upload.setFileSizeMax(maxFileSize);
 
-        List<FileItem>     items = null;
+        List<FileItem> items = null;
         try {
             items = upload.parseRequest(request);
         } catch (FileUploadException e) {
             e.printStackTrace();
             throw e;
         }
-        Iterator<FileItem> iter  = items.iterator();
+        Iterator<FileItem> iter = items.iterator();
         while (iter.hasNext()) {
             FileItem item = iter.next();
             if (item.isFormField()) {
@@ -96,9 +96,10 @@ public class MultiPartWrapper extends HttpServletRequestWrapper {
         Map<String, String> errMap = (Map<String, String>) request.getAttribute("errMap");
         fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
         logger.debug("fileName=*" + fileName + "*");
+        InputStream is = null;
         try {
-            InputStream is       = item.getInputStream();
-            int         fileSize = is.available();
+            is = item.getInputStream();
+            int fileSize = is.available();
             logger.debug(fileSize + "=" + fileSize);
             if (fileSize == 0) {
                 logger.debug("没有上传文件");
@@ -107,11 +108,22 @@ public class MultiPartWrapper extends HttpServletRequestWrapper {
             if (fileSize > maxFileSize) {
                 logger.debug("上传文件大小过大，不能上传");
                 errMap.put(fieldName, "上传文件大小过大，不能上传");
-                item.delete();
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+//            注意这里必须要把输入流关掉，在文件操作时任何输入输出流用完必须关闭
+//            不然后续文件删除动作不能执行
+//            切记切记
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            item.delete();
         }
         if (fileName == null || fileName.trim().equals("")) {
             errMap.put(fieldName, "没有上传的文件");
