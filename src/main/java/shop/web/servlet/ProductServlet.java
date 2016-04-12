@@ -17,6 +17,7 @@ import shop.web.annotation.AddFiled;
 import shop.web.annotation.Auth;
 import shop.web.annotation.UpdateFiled;
 
+import javax.print.attribute.standard.PDLOverrideSupported;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -337,14 +338,16 @@ public class ProductServlet extends BaseServlet {
     @Auth(Role.ADMIN)
     public String delete(HttpServletRequest req, HttpServletResponse resp) {
         int id = getId(req, "pid");
-        if (id > 0) {
-            try {
-                pDao.delete(id);
-            } catch (ShopException e) {
-                logger.debug(e.getMessage());
+        try {
+            Product p = pDao.load(id);
+            int rc = pDao.delete(p.getId());
+            if (rc == 1) {
+                String img = p.getImg();
+                File f = new File(getUploadPath(req, "imgdir", img));
+                f.delete();
             }
-        } else {
-            logger.debug("不存在的商品id" + id);
+        } catch (ShopException e) {
+            logger.debug("不存在的产品id" + id);
         }
         return getRedirectTo() + "/product.do?method=list&toPage=" + req.getParameter("toPage");
 

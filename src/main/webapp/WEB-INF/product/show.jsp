@@ -152,7 +152,9 @@
                 <input type="hidden" name="name" value="addToCart">
                 <input type="hidden" name="pid" value="${param.pid}">
                 <input type="hidden" name="toPage" value="${param.toPage}">
-                <input id="but1" type="submit" value="添加到购物车"/>
+                <c:if test="${cp.stock > 0}">
+                    <input id="but1" type="submit" value="添加到购物车"/>
+                </c:if>
                 <a class="but-a" href="/product.do?method=list&toPage=${param.toPage}">返回</a>
                 <div class="clear-float"></div>
             </div>
