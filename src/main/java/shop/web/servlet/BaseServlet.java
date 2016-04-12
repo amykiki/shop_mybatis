@@ -259,4 +259,9 @@ public class BaseServlet extends HttpServlet {
         logger.debug("filePath=" + filePath);
         return filePath;
     }
+
+    protected String handleException(String errMsg, HttpServletRequest req) {
+        req.setAttribute("errMsg", errMsg);
+        return "/WEB-INF/util/error.jsp";
+    }
 }

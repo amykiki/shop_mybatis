@@ -345,7 +345,7 @@
             </div>
             <div class="col col-4">
                 <c:if test="${pt.status == InSale}">
-                    <a href="#">添加到购物车</a>
+                    <a href="/shopcart.do?method=addToCart&pid=${pt.id}&remethod=list&toPage=${currentPage}">添加到购物车</a>
                 </c:if>
                 <c:if test="${pt.status == OffSale}">
                     商品已下架

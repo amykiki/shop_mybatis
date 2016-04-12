@@ -1,7 +1,5 @@
 package shop.dao;
 
-import shop.enums.PStatus;
-import shop.model.Category;
 import shop.model.Pager;
 import shop.model.Product;
 import shop.mybatis.map.ProductMapper;

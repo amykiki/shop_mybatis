@@ -106,4 +106,13 @@
         <servlet-name>ProductServlet</servlet-name>
         <url-pattern>/product.do</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ShopCartServlet</servlet-name>
+        <servlet-class>shop.web.servlet.ShopCartServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ShopCartServlet</servlet-name>
+        <url-pattern>/shopcart.do</url-pattern>
+    </servlet-mapping>
 </web-app>

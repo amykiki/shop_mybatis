@@ -84,11 +84,12 @@
             background: #ffffff;
             border: 1px solid #A4CDF2;
             color: #1E7ACE;
-            width: 60px;
+            width: auto;
             margin: auto 6px;
             float: left;
             height: 20px;
             line-height: 20px;
+            padding: 2px 4px;
         }
         #but1 {
             width: auto;
@@ -109,7 +110,7 @@
     pageContext.setAttribute("statusMap", statusMap);
 %>
 <div id="formwrapper">
-    <form action="/orders.do" method="post" enctype="multipart/form-data">
+    <form enctype="multipart/form-data">
         <fieldset>
             <legend>商品详情</legend>
             <div class="img-div">
@@ -153,7 +154,7 @@
                 <input type="hidden" name="pid" value="${param.pid}">
                 <input type="hidden" name="toPage" value="${param.toPage}">
                 <c:if test="${cp.stock > 0}">
-                    <input id="but1" type="submit" value="添加到购物车"/>
+                    <a class="but-a" href="/shopcart.do?method=addToCart&pid=${cp.id}&remethod=show&toPage=${param.toPage}">添加到购物车</a>
                 </c:if>
                 <a class="but-a" href="/product.do?method=list&toPage=${param.toPage}">返回</a>
                 <div class="clear-float"></div>
