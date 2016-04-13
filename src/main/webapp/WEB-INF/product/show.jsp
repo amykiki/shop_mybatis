@@ -100,6 +100,10 @@
         .button {
             width: 280px;
         }
+        .error {
+            float: left;
+            clear: left;
+        }
     </style>
 </head>
 <body>
@@ -157,6 +161,7 @@
                     <a class="but-a" href="/shopcart.do?method=addToCart&pid=${cp.id}&remethod=show&toPage=${param.toPage}">添加到购物车</a>
                 </c:if>
                 <a class="but-a" href="/product.do?method=list&toPage=${param.toPage}">返回</a>
+                <label class="error">${param.errMsg}</label>
                 <div class="clear-float"></div>
             </div>
         </fieldset>

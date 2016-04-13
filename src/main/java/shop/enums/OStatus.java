@@ -4,7 +4,7 @@ package shop.enums;
  * Created by Amysue on 2016/4/12.
  */
 public enum OStatus {
-    BUY(1), PAID(2), DELIVERED(3), CONFIRMED(4);
+    PAID(1), DELIVERED(2), CONFIRMED(3), FINISHED(4), CANCELED(-1);
 
     private int code;
 

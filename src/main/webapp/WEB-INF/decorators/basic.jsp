@@ -51,6 +51,7 @@
         </c:choose>
         <li><a href="<%=request.getContextPath()%>/category.do?method=list">商品分类</a></li>
         <li><a href="<%=request.getContextPath()%>/product.do?method=list">商品列表</a></li>
+        <li><a href="<%=request.getContextPath()%>/shopcart.do?method=list">购物车</a></li>
     </ul>
     <hr/>
 </div>

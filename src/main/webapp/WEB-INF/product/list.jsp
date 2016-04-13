@@ -177,6 +177,10 @@
             text-align: center;
             width: auto;
         }
+        .error {
+            color: red;
+            display: block;
+        }
     </style>
     <script type="text/javascript">
         function unCheckAll(ele) {
@@ -346,6 +350,9 @@
             <div class="col col-4">
                 <c:if test="${pt.status == InSale}">
                     <a href="/shopcart.do?method=addToCart&pid=${pt.id}&remethod=list&toPage=${currentPage}">添加到购物车</a>
+                    <c:if test="${pt.id == param.pid}">
+                        <label class="error">${param.errMsg}</label>
+                    </c:if>
                 </c:if>
                 <c:if test="${pt.status == OffSale}">
                     商品已下架

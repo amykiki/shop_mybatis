@@ -1,5 +1,8 @@
 package shop.model;
 
+import shop.util.ShopDi;
+import shop.util.ShopException;
+
 import java.util.LinkedHashMap;
 
 /**
@@ -12,7 +15,7 @@ public class ShopCart {
         cartProducts = new LinkedHashMap<>();
     }
 
-    public void add(Product product) {
+    public void add(Product product) throws ShopException{
         int id = product.getId();
         CartProduct cp = null;
         if (cartProducts.containsKey(id)) {
@@ -21,8 +24,13 @@ public class ShopCart {
             cp = new CartProduct();
             cartProducts.put(id, cp);
         }
+        int formerNum = cp.getPurchaseNum();
+        if ((formerNum > product.getStock()) || (formerNum + 1) > product.getStock()) {
+            throw new ShopException(product.getName() + "库存不足不能购买,库存." +
+                                            product.getStock() + ",购买量" + (formerNum + 1));
+        }
         cp.setPrice(product.getPrice());
-        cp.setPurchaseNum(cp.getPurchaseNum() + 1);
+        cp.setPurchaseNum(formerNum + 1);
         cp.setProduct(product);
     }
 
