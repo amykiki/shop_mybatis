@@ -75,7 +75,51 @@
         WHERE o.id = #{id}
     </select>
 
-    <select id="loadStatus" parameterType="int" resultMap="OStatus">
+
+    <sql id="findWhere">
+        <where>
+            <if test="name != null and _parameter.get(name) != ''">
+                p.name LIKE concat('%', #{name}, '%')
+            </if>
+            <if test="status != null">
+                AND o.status = #{status}
+            </if>
+        </where>
+    </sql>
+
+    <select id="find" parameterType="map" resultMap="ordermap">
+        SELECT o.id AS oid, o.buy_date as buyDate, o.pay_date as payDate,
+        o.deliver_date as deliverDate, o.confirm_date as confirmDate,
+        o.status as ostatus,o.total_price AS totalPrice,
+        u.id AS uid, u.username, u.password, u.nickname, u.role,
+        a.id AS aid, a.recipient, a.address_info AS addressInfo, a.phone, a.zip,
+        cp.id AS cpid, cp.price AS cpPrice, cp.num AS purchaseNum,
+        p.id as pid, p.name, p.price AS pPrice, p.img, p.stock, p.status AS pstatus, p.sales
+        FROM t_order AS o
+        LEFT JOIN t_cart_product AS cp
+        ON o.id = cp.oid
+        LEFT JOIN t_user AS u
+        on o.uid = u.id
+        LEFT JOIN t_address AS a
+        on o.aid = a.id
+        LEFT JOIN t_product as p
+        on cp.pid = p.id
+        <include refid="findWhere"/>
+        ORDER BY o.id DESC
+        LIMIT #{offset}, #{pageLimit}
+    </select>
+
+    <select id="findCount" parameterType="map" resultType="int">
+        SELECT count(*)
+        FROM t_order AS o
+        LEFT JOIN t_cart_product AS cp
+        ON o.id = cp.oid
+        LEFT JOIN t_product as p
+        on cp.pid = p.id
+        <include refid="findWhere"/>
+    </select>
+
+    <select id="loadStatus" parameterType="Order" resultType="shop.enums.OStatus">
         SELECT status FROM t_order WHERE id = #{id}
     </select>
 

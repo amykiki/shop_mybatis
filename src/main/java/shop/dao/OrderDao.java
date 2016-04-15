@@ -2,12 +2,14 @@ package shop.dao;
 
 import shop.enums.OStatus;
 import shop.model.Order;
+import shop.model.Pager;
 import shop.model.Product;
 import shop.mybatis.map.OrderMapper;
 import shop.util.ShopDi;
 import shop.util.ShopException;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by Amysue on 2016/4/15.
@@ -65,6 +67,11 @@ public class OrderDao extends BaseDao<Order> implements IOrderDao {
     @Override
     public Order load(int id) throws ShopException {
         return super.load(id);
+    }
+
+    @Override
+    public Pager<Order> find(Map<String, Object> params) {
+        return super.find(params);
     }
 
     @Override
