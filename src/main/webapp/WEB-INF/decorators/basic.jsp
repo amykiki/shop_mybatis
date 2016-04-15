@@ -15,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/main.css">
     <decorator:head/>
 </head>
-<body>
+<body onload="<decorator:getProperty property='body.onload'/>">
 <c:set var="ADMIN" value="<%=Role.ADMIN%>"/>
 <c:set var="NORMAL" value="<%=Role.NORMAL%>"/>
 

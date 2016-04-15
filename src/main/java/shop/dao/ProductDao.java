@@ -99,6 +99,32 @@ public class ProductDao extends BaseDao<Product> implements IProductDao {
     }
 
     @Override
+    public int addSales(int id, int addSales) {
+        try {
+            Product p     = load(id);
+            int     sales = p.getSales() + addSales;
+            p.setSales(sales);
+            return setSales(p);
+        } catch (ShopException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public int reduceSales(int id, int reduceSales) {
+        try {
+            Product p     = load(id);
+            int     sales = p.getSales() - reduceSales;
+            p.setSales(sales);
+            return setSales(p);
+        } catch (ShopException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
     public Pager<Product> find(Map<String, Object> params) {
         return super.find(params);
     }

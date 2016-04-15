@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="shop.mybatis.map.OrderMapper">
+    <insert id="add" parameterType="Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_order(buy_date, status, uid, aid, total_price)
+        VALUES (#{buyDate}, #{status}, #{user.id}, #{address.id}, #{totalPrice})
+    </insert>
+    <update id="updatePrice" parameterType="Order">
+        UPDATE t_order SET total_price = #{totalPrice} WHERE id = #{id}
+    </update>
+
+    <update id="updatePayDate" parameterType="Order">
+        UPDATE t_order SET pay_date = #{payDate} WHERE id = #{id}
+    </update>
+
+    <update id="updateDeliverDate" parameterType="Order">
+        UPDATE t_order SET deliver_date = #{deliverDate} WHERE id = #{id}
+    </update>
+
+    <update id="updateConfirmDate" parameterType="Order">
+        UPDATE t_order SET confirm_date = #{confirmDate} WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus" parameterType="Order">
+        UPDATE t_order SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM t_order WHERE id = #{id}
+    </delete>
+
+    <resultMap id="ordermap" type="Order" autoMapping="true">
+        <id column="oid" property="id"/>
+        <result column="ostatus" property="status"/>
+        <association property="user" javaType="User" resultMap="usermap"/>
+        <association property="address" javaType="Address" resultMap="addressmap"/>
+        <collection property="products" ofType="CartProduct" resultMap="cpmap"/>
+    </resultMap>
+    <resultMap id="usermap" type="User" autoMapping="true">
+        <id column="uid" property="id"/>
+    </resultMap>
+    <resultMap id="addressmap" type="Address" autoMapping="true">
+        <id column="aid" property="id"/>
+    </resultMap>
+    <resultMap id="cpmap" type="CartProduct" autoMapping="true">
+        <id column="cpid" property="id"/>
+        <result column="cpPrice" property="price"/>
+        <result column="purchaseNum" property="purchaseNum"/>
+        <result column="oid" property="oid"/>
+        <association property="product" javaType="Product" autoMapping="true">
+            <id column="pid" property="id"/>
+            <result column="pPrice" property="price"/>
+            <result column="pstatus" property="status"/>
+        </association>
+    </resultMap>
+    <select id="load" parameterType="int" resultMap="ordermap">
+        SELECT o.id AS oid, o.buy_date as buyDate, o.pay_date as payDate,
+               o.deliver_date as deliverDate, o.confirm_date as confirmDate,
+               o.status as ostatus,o.total_price AS totalPrice,
+               u.id AS uid, u.username, u.password, u.nickname, u.role,
+               a.id AS aid, a.recipient, a.address_info AS addressInfo, a.phone, a.zip,
+               cp.id AS cpid, cp.price AS cpPrice, cp.num AS purchaseNum,
+               p.id as pid, p.name, p.price AS pPrice, p.img, p.stock, p.status AS pstatus, p.sales
+        FROM t_order AS o
+        LEFT JOIN t_cart_product AS cp
+        ON o.id = cp.oid
+        LEFT JOIN t_user AS u
+        on o.uid = u.id
+        LEFT JOIN t_address AS a
+        on o.aid = a.id
+        LEFT JOIN t_product as p
+        on cp.pid = p.id
+        WHERE o.id = #{id}
+    </select>
+
+    <select id="loadStatus" parameterType="int" resultMap="OStatus">
+        SELECT status FROM t_order WHERE id = #{id}
+    </select>
+
+</mapper>

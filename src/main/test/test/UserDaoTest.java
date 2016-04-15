@@ -24,7 +24,7 @@ public class UserDaoTest extends BaseTest{
 
     @Test
     public void testLoad() throws Exception {
-        User u = udao.load(19);
+        User u = udao.load(1);
         System.out.println(u);
         if (u.getAddresses() != null) {
             for (Address addr : u.getAddresses()) {

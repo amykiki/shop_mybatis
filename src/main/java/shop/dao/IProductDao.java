@@ -30,7 +30,10 @@ public interface IProductDao {
 
     public int addStock(int id, int addStock);
 
+    public int addSales(int id, int addSales);
+
     public int reduceStock(int id, int reduceStock) throws ShopException;
 
+    public int reduceSales(int id, int reduceSales);
     public Pager<Product> find(Map<String, Object> params);
 }

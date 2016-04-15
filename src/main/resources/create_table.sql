@@ -86,3 +86,25 @@ WHERE c_id in
 SELECT p.id AS p_id, p.name AS p_name, p.price, p.img, p.stock, p.status, p.sales,c.id AS c_id, c.name AS c_name FROM t_product p LEFT JOIN t_category c ON p.c_id = c.id WHERE price BETWEEN 0 AND 800 ORDER BY price;
 
 SELECT DISTINCT node.id FROM t_category AS node INNER JOIN t_category AS parent ON node.lft BETWEEN parent.lft AND parent.rgt WHERE parent.id IN ( 6 ,24 );
+
+
+SELECT o.id AS oid, o.buy_date as buyDate, o.pay_date as payDate,
+  o.deliver_date as deliverDate, o.confirm_date as confirmDate,
+  o.status as ostatus, o.total_price AS totalPrice,
+  u.id AS uid, u.username, u.password, u.nickname, u.role,
+  a.id AS aid, a.recipient, a.address_info AS addressInfo, a.phone, a.zip,
+  cp.id AS cpid, cp.price AS cpPrice, cp.num AS purchaseNum,
+  p.id as pid, p.name, p.price AS pPrice, p.img, p.stock, p.status AS pstatus, p.sales
+FROM t_order AS o
+  LEFT JOIN t_cart_product AS cp
+  ON o.id = cp.oid
+  LEFT JOIN t_user AS u
+on o.uid = u.id
+LEFT JOIN t_address AS a
+on o.aid = a.id
+LEFT JOIN t_product as p
+on cp.pid = p.id
+WHERE o.id = 2;
+
+UPDATE t_order SET total_price = 4000 WHERE id = 3;
+UPDATE t_order SET pay_date = NULL, deliver_date = NULL, confirm_date = NULL WHERE id = 2;
