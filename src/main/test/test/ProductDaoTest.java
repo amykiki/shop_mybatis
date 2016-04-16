@@ -56,9 +56,9 @@ public class ProductDaoTest extends BaseTest {
 //        p.setCategory(new Category(6));
         Product p = new Product();
         p.setId(1);
-        p.setPrice(628);
-//        p.setStock(200);
-        p.setSales(8);
+//        p.setPrice(628);
+        p.setStock(1);
+        p.setSales(4);
 //        p.setCategory(new Category(28));
         pDao.update(p);
     }

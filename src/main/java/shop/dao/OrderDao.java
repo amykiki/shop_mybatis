@@ -9,6 +9,7 @@ import shop.util.ShopDi;
 import shop.util.ShopException;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Map;
  */
 public class OrderDao extends BaseDao<Order> implements IOrderDao {
     private ICartProductDao cpDao;
+
 
     public OrderDao() {
         super(OrderMapper.class);
@@ -56,7 +58,7 @@ public class OrderDao extends BaseDao<Order> implements IOrderDao {
     public int delete(int id) throws ShopException {
         OStatus status = loadStatus(id);
         if (status != null) {
-            if (status == OStatus.ToPAID || status == OStatus.CANCELED) {
+            if (status == OStatus.FINISHED || status == OStatus.CANCELED) {
                 cpDao.delete(id);
                 return super.delete(id);
             }
@@ -83,6 +85,48 @@ public class OrderDao extends BaseDao<Order> implements IOrderDao {
         } catch (Exception e) {
             e.printStackTrace();
             logger.debug("Load Order Status id = " + id + " fail" + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public List<Order> loadToPay() {
+        Object[]   params = new Object[]{OStatus.ToPAID};
+        Class<?>[] pClz   = new Class[]{OStatus.class};
+        try {
+            return (List<Order>) super.runSelectMethod("loadToPay", params, pClz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.debug("Load Order with to pay status fail" + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public int updateMultipleCancel(List<Integer> list) {
+        if (list == null || list.size() == 0) {
+            return 0;
+        }
+        Object[]   params = new Object[]{OStatus.CANCELED, list};
+        Class<?>[] pClz   = new Class[]{OStatus.class, List.class};
+        try {
+            return  (int)super.runMethod("updateMultipleStatus", params, pClz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.debug("updateMultipleCancel" + e.getMessage());
+        }
+        return 0;
+    }
+
+    @Override
+    public List<Order> loadListsStatus(Map<String, Object> map) {
+        Object[]   params = new Object[]{map};
+        Class<?>[] pClz   = new Class[]{Map.class};
+        try {
+            return (List<Order>) super.runSelectMethod("loadListsStatus", params, pClz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.debug("Load Order with to pay status fail" + e.getMessage());
         }
         return null;
     }

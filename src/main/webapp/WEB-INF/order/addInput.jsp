@@ -164,11 +164,17 @@
     </script>
 </head>
 <body>
-<c:set var="addrs" value="${lguser.addresses}"/>
+<c:set var="addrs" value="${cuser.addresses}"/>
 <c:set var="totalPrice" value="${0}"/>
+<label class="error">${errMap.errMsg}</label>
 <form action="/order.do?method=addInput" method="post">
     <div class="address-div">
         <h3 class="address-h">确认收货地址</h3>
+        <c:choose>
+            <c:when test="${empty addrs}">
+                <a href="/address.do?method=add">添加收货地址</a>
+            </c:when>
+        </c:choose>
         <ul id="address-list" class="address-list">
             <c:forEach items="${addrs}" var="addr" varStatus="vstatus">
                 <li>

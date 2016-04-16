@@ -13,6 +13,7 @@
         <typeAlias alias="Product" type="${product}"/>
         <typeAlias alias="Order" type="${order}"/>
         <typeAlias alias="CartProduct" type="${cartproduct}"/>
+        <typeAlias alias="OStatus" type="${ostatus}"/>
     </typeAliases>
     <typeHandlers>
         <typeHandler handler="shop.mybatis.handler.RoleHandler" javaType="shop.enums.Role"/>

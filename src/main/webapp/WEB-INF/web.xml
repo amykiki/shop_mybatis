@@ -14,6 +14,9 @@
         <param-name>imgdir</param-name>
         <param-value>img</param-value>
     </context-param>
+    <listener>
+        <listener-class>shop.web.listener.OrderServletListener</listener-class>
+    </listener>
     <!--diskfileitem Resource cleanup-->
     <listener>
         <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
@@ -119,6 +122,14 @@
     <servlet>
         <servlet-name>OrderServlet</servlet-name>
         <servlet-class>shop.web.servlet.OrderServlet</servlet-class>
+        <init-param>
+            <param-name>pageLimit</param-name>
+            <param-value>6</param-value>
+        </init-param>
+        <init-param>
+            <param-name>pageShow</param-name>
+            <param-value>10</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>OrderServlet</servlet-name>

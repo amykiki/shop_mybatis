@@ -234,8 +234,9 @@ public class BaseServlet extends HttpServlet {
         return errMap.isEmpty();
     }
 
-    protected void uploadImage(FileItem item, String fileName, String fieldName, HttpServletRequest req) throws ShopException {
+    protected String uploadImage(FileItem item, String fileName, String fieldName, HttpServletRequest req) throws ShopException {
         String filePath = getUploadPath(req, "imgdir", fileName);
+//        String filePath = fileName;
         File   storeFile = new File(filePath);
         try {
             item.write(storeFile);
@@ -246,13 +247,14 @@ public class BaseServlet extends HttpServlet {
             storeFile.delete();
             throw new ShopException("上传" + fileName + "失败");
         }
-        return;
+        return filePath;
     }
 
     protected String getUploadPath(HttpServletRequest req, String pathName, String fileName) {
         ServletContext context    = req.getServletContext();
         String         imgDir     = context.getInitParameter(pathName);
         String         uploadPath = context.getRealPath("") + File.separator + imgDir;
+        uploadPath = uploadPath.replace("target\\mybatis-shop-web", "src\\main\\webapp");
         logger.debug("uploadPath=" + uploadPath);
         String filePath = fileName.substring(fileName.lastIndexOf("/") + 1);
         filePath  = uploadPath + File.separator + filePath;

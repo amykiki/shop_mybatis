@@ -17,7 +17,7 @@ import java.util.Map;
  * Created by Amysue on 2016/3/18.
  */
 public class BaseDao<T> {
-    private Class clz;
+    private   Class  clz;
     protected Logger logger;
 
     public BaseDao(Class clz) {
@@ -46,7 +46,7 @@ public class BaseDao<T> {
         return obj;
     }
 
-    public T loadByName(String name) throws ShopException{
+    public T loadByName(String name) throws ShopException {
         T          obj     = null;
         SqlSession session = null;
         try {
@@ -166,17 +166,17 @@ public class BaseDao<T> {
     }
 
     public Pager<T> find(Map<String, Object> params) {
-        SqlSession session     = null;
-        List<T>    lists       = null;
-        Pager<T>   pager       = new Pager<>();
-        int        allItems    = 0;
-        int        pageLimit   = (int) params.get("pageLimit");
-        int        toPage      = (int) params.get("toPage");
+        SqlSession session   = null;
+        List<T>    lists     = null;
+        Pager<T>   pager     = new Pager<>();
+        int        allItems  = 0;
+        int        pageLimit = (int) params.get("pageLimit");
+        int        toPage    = (int) params.get("toPage");
 //        翻页按钮显示个数
-        int        pageShow    = (int) params.get("pageShow");
-        int        allPageNums = 0;
-        int        begin       = 0;
-        int        end         = 0;
+        int pageShow    = (int) params.get("pageShow");
+        int allPageNums = 0;
+        int begin       = 0;
+        int end         = 0;
         try {
             session = BatisUtil.getSession();
             Object mapper    = session.getMapper(clz);
@@ -258,7 +258,11 @@ public class BaseDao<T> {
             } else {
                 m = mapper.getClass().getDeclaredMethod(mName, pClz);
             }
-            obj = m.invoke(mapper, params);
+            if (params == null) {
+                obj = m.invoke(mapper);
+            } else {
+                obj = m.invoke(mapper, params);
+            }
         } catch (Exception e) {
             throw new Exception(e);
         } finally {

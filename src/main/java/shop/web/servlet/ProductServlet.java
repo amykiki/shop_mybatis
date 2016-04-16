@@ -188,6 +188,7 @@ public class ProductServlet extends BaseServlet {
             try {
                 uploadImage(item, cp.getImg(), "img", req);
                 File oldPic = new File(getUploadPath(req, "imgdir", op.getImg()));
+//                File oldPic = new File(op.getImg());
                 oldPic.delete();
                 logger.debug("删除" + op.getImg());
                 logger.debug("替换原有的图片路径");

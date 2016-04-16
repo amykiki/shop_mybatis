@@ -54,7 +54,7 @@ public class UserDaoTest extends BaseTest{
     public void testUpdate() throws Exception {
         User u = new User();
         u.setId(5);
-        u.setPassword("34552");
+        u.setPassword("345526");
 //        u.setNickname("哈利");
         u.setRole(Role.NORMAL);
         int affectedRows = udao.update(u);

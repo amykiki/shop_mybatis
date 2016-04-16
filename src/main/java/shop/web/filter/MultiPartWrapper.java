@@ -28,6 +28,8 @@ public class MultiPartWrapper extends HttpServletRequestWrapper {
     private              Map<String, String[]> params      = null;
     private              Logger                logger      = null;
     private              HttpServletRequest    request     = null;
+    private              String                imgdir      = null;
+    private              String                imgPath     = null;
     //upload file will be save to temp 500KB
     private static final int                   maxMemSize  = 500 * 1024;
     //max file will be drop 20M
@@ -46,13 +48,20 @@ public class MultiPartWrapper extends HttpServletRequestWrapper {
         ServletContext context = request.getServletContext();
         String         tempdir = context.getInitParameter("tempdir");
         logger.debug("Tempdir = " + tempdir);
+
+        imgdir = context.getInitParameter("imgdir");
+        logger.debug("Imgdir = " + imgdir);
         FileCleaningTracker fileCleaningTracker = FileCleanerCleanup.getFileCleaningTracker(context);
 
         DiskFileItemFactory factory = new DiskFileItemFactory();
         factory.setSizeThreshold(maxMemSize);
 
-        String tempPath   = getServletContext().getRealPath("") + File.separator + tempdir;
-        File   repository = new File(tempPath);
+        String uploaddir = getServletContext().getRealPath("");
+        uploaddir = uploaddir.replace("target\\mybatis-shop-web", "src\\main\\webapp");
+
+        String tempPath = uploaddir + File.separator + tempdir;
+        imgPath = uploaddir + File.separator + imgdir;
+        File repository = new File(tempPath);
         if (!repository.exists()) {
             repository.mkdir();
         }
@@ -108,6 +117,14 @@ public class MultiPartWrapper extends HttpServletRequestWrapper {
             if (fileSize > maxFileSize) {
                 logger.debug("上传文件大小过大，不能上传");
                 errMap.put(fieldName, "上传文件大小过大，不能上传");
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                item.delete();
             }
 
         } catch (IOException e) {
@@ -123,13 +140,13 @@ public class MultiPartWrapper extends HttpServletRequestWrapper {
                     e.printStackTrace();
                 }
             }
-            item.delete();
         }
         if (fileName == null || fileName.trim().equals("")) {
             errMap.put(fieldName, "没有上传的文件");
         }
         request.setAttribute("fileItem-" + fieldName, item);
         fileName = makeFileName(fileName);
+//        params.put(fieldName, new String[]{imgPath + File.separator + fileName});
         params.put(fieldName, new String[]{"/img/" + fileName});
     }
 

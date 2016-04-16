@@ -15,6 +15,17 @@
         UPDATE t_order SET pay_date = #{payDate} WHERE id = #{id}
     </update>
 
+    <update id="update" parameterType="Order">
+        UPDATE t_order
+        <set>
+            <if test="payDate != null">pay_date=#{payDate},</if>
+            <if test="deliverDate != null">deliver_date=#{deliverDate},</if>
+            <if test="confirmDate != null">confirm_date=#{confirmDate},</if>
+            <if test="status != null">status=#{status}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
     <update id="updateDeliverDate" parameterType="Order">
         UPDATE t_order SET deliver_date = #{deliverDate} WHERE id = #{id}
     </update>
@@ -81,8 +92,14 @@
             <if test="name != null and _parameter.get(name) != ''">
                 p.name LIKE concat('%', #{name}, '%')
             </if>
-            <if test="status != null">
-                AND o.status = #{status}
+            <if test="ostatus != null">
+                AND o.status = #{ostatus}
+            </if>
+            <if test="oid != null">
+                AND  o.id = #{oid}
+            </if>
+            <if test="uid != null">
+                AND  u.id = #{uid}
             </if>
         </where>
     </sql>
@@ -114,13 +131,59 @@
         FROM t_order AS o
         LEFT JOIN t_cart_product AS cp
         ON o.id = cp.oid
+        LEFT JOIN t_user AS u
+        on o.uid = u.id
         LEFT JOIN t_product as p
         on cp.pid = p.id
         <include refid="findWhere"/>
+    </select>
+
+    <resultMap id="orderstatusmap" type="Order" autoMapping="true">
+        <id column="oid" property="id"/>
+        <result column="ostatus" property="status"/>
+        <collection property="products" ofType="CartProduct" resultMap="cpmap"/>
+    </resultMap>
+
+    <sql id="findWhereList">
+        <where>
+            <if test="name != null and _parameter.get(name) != ''">
+                p.name LIKE concat('%', #{name}, '%')
+            </if>
+            <if test="ostatus != null">
+                AND o.status = #{ostatus}
+            </if>
+            <if test="oid != null">
+                AND  o.id = #{oid}
+            </if>
+        </where>
+    </sql>
+    <select id="loadListsStatus" parameterType="map" resultMap="orderstatusmap">
+        SELECT o.id AS oid, o.buy_date as buyDate,o.status as ostatus,o.total_price AS totalPrice,
+        cp.id AS cpid, cp.price AS cpPrice, cp.num AS purchaseNum,
+        p.id as pid, p.name, p.stock, p.status AS pstatus, p.sales
+        FROM t_order AS o
+        LEFT JOIN t_cart_product AS cp
+        ON o.id = cp.oid
+        LEFT JOIN t_product as p
+        on cp.pid = p.id
+        <include refid="findWhereList"/>
     </select>
 
     <select id="loadStatus" parameterType="Order" resultType="shop.enums.OStatus">
         SELECT status FROM t_order WHERE id = #{id}
     </select>
 
+    <select id="loadToPay" parameterType="OStatus" resultType="Order">
+        SELECT id, buy_date AS buyDate FROM t_order WHERE status = #{status};
+    </select>
+
+    <sql id="inList">
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </sql>
+    <update id="updateMultipleStatus">
+        UPDATE t_order SET status = #{status} WHERE id in
+        <include refid="inList"/>
+    </update>
 </mapper>
